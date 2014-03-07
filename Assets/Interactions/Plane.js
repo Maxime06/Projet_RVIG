@@ -2,7 +2,7 @@
 
 public class Plane extends MonoBehaviour {
 	private var mesh : Mesh;
- 
+	public var center : boolean = true; // au début du script
 	// par défaut la taille est de 1, idem pour la résolution
 	public var size : Vector2 = new Vector2 (1, 1);
 	public var resolutionX : int = 1;
@@ -55,6 +55,9 @@ public class Plane extends MonoBehaviour {
 		for (y = 0; y <= resolutionY; y++) {
 			for (x = 0; x <= resolutionX; x++) {
 				vertices[i] = new Vector3 (x * size.x / resolutionX, 0, y * size.y / resolutionY);
+				if (center) {
+					vertices[i] -= new Vector3 (size.x / 2, 0, size.y / 2);
+				}
 				// le cast en float sert à éviter la division entière de 2 int
 				uv[i] = new Vector2 ((x*1.0) / resolutionX, (y*1.0) / resolutionY);
 				// toutes les normales pointent vers le haut
