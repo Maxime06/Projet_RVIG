@@ -6,23 +6,25 @@ function Start () {
 }
 
 function Update () {
-
 // rotation verticale haut
 if (Input.GetKey(KeyCode.UpArrow)) {
-	transform.Rotate(speed*Time.deltaTime,0,0);
+	// point de rotation
+	// axe de roation
+	// angle
+	transform.RotateAround(Vector3.zero,Vector3.right,speed*Time.deltaTime);
 }
 // rotation verticale bas
 if (Input.GetKey(KeyCode.DownArrow)) {
-	transform.Rotate(-speed*Time.deltaTime,0,0);
+	transform.RotateAround(Vector3.zero,Vector3.right,-speed*Time.deltaTime);
 }
 
 // rotation horizontale gauche
 if (Input.GetKey(KeyCode.LeftArrow)) {
-	transform.Rotate(0,speed*Time.deltaTime,0);
+	transform.RotateAround(Vector3.zero,Vector3.up,speed*Time.deltaTime);
 }
 
 // rotation verticale bas
 if (Input.GetKey(KeyCode.RightArrow)) {
-	transform.Rotate(0,-speed*Time.deltaTime,0);
+	transform.RotateAround(Vector3.zero,Vector3.up,-speed*Time.deltaTime);
 }
 }
