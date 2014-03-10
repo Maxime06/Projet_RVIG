@@ -94,4 +94,5 @@ function UpdateMesh () {
 	// 0 est l'index du submesh
 	mesh.RecalculateBounds ();
 	gameObject.GetComponent(MeshFilter).mesh = mesh;
+	gameObject.GetComponent(MeshCollider).sharedMesh = mesh;
 }
