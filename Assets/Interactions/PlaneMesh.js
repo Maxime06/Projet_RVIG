@@ -30,7 +30,7 @@ function ValidateData () {
  	// si attribut mesh = null, 
 	if (mesh == null) {
 		// on récupère le mesh du meshfilter
-		mesh = gameObject.GetComponent(MeshFilter).mesh;
+		mesh = gameObject.GetComponent(MeshFilter).sharedMesh;
 		mesh.name = "Procedural Plane";			
 	}
 	
