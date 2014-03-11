@@ -41,13 +41,12 @@ function Start () {
 
 	for (i = 0; i < parrallele; i++) {
 		for (j = 0; j < meridian; j++) {
-			
-			newTriangles[l    ] = i * meridian + j;
-			newTriangles[l + 1] = i * meridian + 1 +j;
-			newTriangles[l + 2] = (i+1)*meridian+j+1;
-			newTriangles[l + 3] = i*meridian+1+j;
-			newTriangles[l + 4] = (i+1)* meridian +j;
-			newTriangles[l + 5] = (i+1)*meridian +j+1;
+			newTriangles[l + 5] =
+			newTriangles[l    ] = i * (meridian + 1) + j;
+			newTriangles[l + 1] = (i + 1) * (meridian + 1) + j;
+			newTriangles[l + 2] =
+			newTriangles[l + 3] = (i + 1) * (meridian + 1) + j + 1;
+			newTriangles[l + 4] = i * (meridian + 1) + j + 1;
 			l += 6;
 		}
 	}
