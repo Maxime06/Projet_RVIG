@@ -1,11 +1,10 @@
 ﻿#pragma strict
  
-public var newVertices : Vector3[];
-public var newTriangles : int[];
 public var radius : float = 5f;
 public var height : float = 8f;
 public var nbPoints : int = 8;
- 
+private var newVertices : Vector3[]=new Vector3[2*nbPoints+2];
+private var newTriangles : int[] = new int[3*4*nbPoints];
 function Start () {
  
     var Cylinder : GameObject = new GameObject ("Cylinder");  	//create an empty gameobject with that name
@@ -66,6 +65,7 @@ function Start () {
 	newTriangles[12*k/2+11] = 2*nbPoints;
  
     var newMesh : Mesh = new Mesh ();                               	//create a new mesh, assign the vertices and triangles
+        newMesh.Clear();
         newMesh.vertices = newVertices;
         newMesh.triangles = newTriangles;
         newMesh.RecalculateNormals();                               	//recalculate normals, bounds and optimize

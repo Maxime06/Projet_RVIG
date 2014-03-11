@@ -2,8 +2,8 @@
 
 //@MenuItem ("GameObject/Create Other/Parallelepipoid")                  		//add it to the menu
 
-var parrallele : float = 20;
-var meridian : float = 20;
+var parrallele : float = 200;
+var meridian : float = 200;
 private var newVertices : Vector3[] = new Vector3[(parrallele+1)*(meridian+1)];
 private var newTriangles : int[]  = new int[parrallele * meridian * 6];
 var radius : int = 5;
