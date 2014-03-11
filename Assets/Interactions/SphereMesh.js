@@ -4,7 +4,7 @@
 
 var parrallele : float = 20;
 var meridian : float = 20;
-private var newVertices : Vector3[] = new Vector3[parrallele*meridian];
+private var newVertices : Vector3[] = new Vector3[(parrallele+1)*(meridian+1)];
 private var newTriangles : int[]  = new int[parrallele * meridian * 6];
 var radius : int = 5;
 
@@ -26,8 +26,8 @@ function Start () {
  */
  var k : int = 0;
  var l : int = 0;
- for (var i : int = 0; i < parrallele; i++) {
- 	for (var j : int = 0; j < meridian; j++) {
+ for (var i : int = 0; i <= parrallele; i++) {
+ 	for (var j : int = 0; j <= meridian; j++) {
  	var theta : float = (i/parrallele)*2*Mathf.PI;
  	var phi : float = (j/meridian)*2*Mathf.PI;
  	var c1 : float = radius * Mathf.Cos(theta) * Mathf.Cos(phi);
@@ -42,7 +42,7 @@ function Start () {
 	for (i = 0; i < parrallele; i++) {
 		for (j = 0; j < meridian; j++) {
 			
-			newTriangles[l    ] = i* meridian + j;
+			newTriangles[l    ] = i * meridian + j;
 			newTriangles[l + 1] = i * meridian + 1 +j;
 			newTriangles[l + 2] = (i+1)*meridian+j+1;
 			newTriangles[l + 3] = i*meridian+1+j;
@@ -52,12 +52,13 @@ function Start () {
 		}
 	}
  
-    var newMesh : Mesh = new Mesh ();                               			//create a new mesh, assign the vertices and triangles
-        newMesh.vertices = newVertices;
-        newMesh.triangles = newTriangles;
-        newMesh.RecalculateNormals();                               			//recalculate normals, bounds and optimize
-        newMesh.RecalculateBounds();
-        newMesh.Optimize();                             
+    var newMesh : Mesh = new Mesh (); 
+    newMesh.Clear();                              			//create a new mesh, assign the vertices and triangles
+    newMesh.vertices = newVertices;
+    newMesh.triangles = newTriangles;
+    newMesh.RecalculateNormals();                               			//recalculate normals, bounds and optimize
+    newMesh.RecalculateBounds();
+    newMesh.Optimize();                             
              
     (Sphere.GetComponent(MeshFilter) as MeshFilter).mesh = newMesh;  	//assign the created mesh as the used mesh
 
