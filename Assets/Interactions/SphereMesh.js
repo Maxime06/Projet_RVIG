@@ -5,7 +5,7 @@
 var parrallele : float = 20;
 var meridian : float = 20;
 private var newVertices : Vector3[] = new Vector3[parrallele*meridian];
-var newTriangles : int[]  = new int[parrallele * meridian * 6*6];
+private var newTriangles : int[]  = new int[parrallele * meridian * 6];
 var radius : int = 5;
 
 function Start () {
@@ -39,15 +39,15 @@ function Start () {
  }
 
 
-	for (var z : int  = 0; z < parrallele; z++) {
-		for (var x : int = 0; x < meridian; x++) {
+	for (i = 0; i < parrallele; i++) {
+		for (j = 0; j < meridian; j++) {
 			
-			newTriangles[l    ] = (z -1)* meridian + x;
-			newTriangles[l + 1] = (z -1) * meridian + 1 +x;;
-			newTriangles[l + 2] = z*meridian+x+1;
-			newTriangles[l + 3] = (z-1)*meridian+1+x;
-			newTriangles[l + 4] = z* meridian +x;
-			newTriangles[l + 5] = z*meridian +x+1;
+			newTriangles[l    ] = i* meridian + j;
+			newTriangles[l + 1] = i * meridian + 1 +j;
+			newTriangles[l + 2] = (i+1)*meridian+j+1;
+			newTriangles[l + 3] = i*meridian+1+j;
+			newTriangles[l + 4] = (i+1)* meridian +j;
+			newTriangles[l + 5] = (i+1)*meridian +j+1;
 			l += 6;
 		}
 	}
