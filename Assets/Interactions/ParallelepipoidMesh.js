@@ -19,11 +19,11 @@ function Start () {
     Parallelepipoid.renderer.material.color = Color.green;
     
  
-    var p0 : Vector3 = Vector3(0,0,0);                              			//the four points that make a tetrahedron
+    var p0 : Vector3 = Vector3(0,0,0);                              			//the eight points that make a parallelepipoid
     var p1 : Vector3 = Vector3(1*width,0,0);
     var p2 : Vector3 = Vector3(1*width,1*height,0);
     var p3 : Vector3 = Vector3(0,1*height,0);
-    var p4 : Vector3 = Vector3(0,0,1*length);                              		//the four points that make a tetrahedron
+    var p4 : Vector3 = Vector3(0,0,1*length);
     var p5 : Vector3 = Vector3(1*width,0,1*length);
     var p6 : Vector3 = Vector3(1*width,1*height,1*length);
     var p7 : Vector3 = Vector3(0,1*height,1*length);
