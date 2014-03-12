@@ -14,9 +14,9 @@ function Start () {
     Cylinder.AddComponent(MeshCollider);
     Cylinder.renderer.material = new Material(Shader.Find("Specular"));
     Cylinder.renderer.material.color = Color.green;
-    
+    var angle : float = 2*Mathf.PI / nbPoints; 
  	for (var i : int = 0; i < nbPoints; i++) {
- 		var theta : float = 2 * Mathf.PI / nbPoints;
+ 		var theta : float = i * angle;
  		
  		var p : Vector3 = Vector3(radius*Mathf.Cos(theta),0,radius*Mathf.Sin(theta));
  		var q : Vector3 = Vector3(radius*Mathf.Cos(theta),height,radius*Mathf.Sin(theta));
