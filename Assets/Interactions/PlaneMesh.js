@@ -1,39 +1,36 @@
 ﻿#pragma strict
 
-var mesh : Mesh;
-var center : boolean = true; // au début du script
-// par défaut la taille est de 1, idem pour la résolution
+var Plan : GameObject;
+var center : boolean = true;
 var size : Vector2 = new Vector2 (10, 10);
 var resolutionX : int = 10;
 var resolutionZ : int = 10;
+private var newVertices : Vector3[] = new Vector3[(resolutionX + 1) * (resolutionZ + 1)];
+private var newTriangles : int[] = new int[resolutionX * resolutionZ * 6];
 
 function Start () {
-	UpdateMesh();
+
 }
 
-// called when the script is loaded or a value is changed in the inspector
-function OnValidate () {
-	UpdateMesh ();
-}
-
-// ensure that data is valid (ex : size is positive)
 function ValidateData () {
-	// si pas de MeshFilter, on en ajoute un et un mesh.
-	if (gameObject.GetComponent(MeshFilter)==null) {
-		gameObject.AddComponent(MeshFilter);
-		gameObject.GetComponent(MeshFilter).mesh = new Mesh();
+    // create Plane if don't exists
+	if(gameObject.Find("Forme") == null) {
+		Plan = new GameObject ("Forme");
 	}
-	// si pas de mesh collider, on en ajoute un.
-	if (gameObject.GetComponent(MeshCollider)==null) {
-				gameObject.AddComponent(MeshCollider);
- 	}
- 	// si attribut mesh = null, 
-	if (mesh == null) {
-		// on récupère le mesh du meshfilter
-		mesh = gameObject.GetComponent(MeshFilter).sharedMesh;
-		mesh.name = "Procedural Plane";			
+	//add a meshfilter
+	if(gameObject.Find("Forme").GetComponent(MeshFilter) == null) {
+		Plan.AddComponent(MeshFilter);                           		
 	}
-	
+	//add a meshrenderer
+	if(gameObject.Find("Forme").GetComponent(MeshRenderer) == null) { 
+    	Plan.AddComponent(MeshRenderer);
+    	// load the resource PlaneMaterial from folder Assets/Resources
+    	var mat : Material = Resources.Load("PlaneMaterial", Material);
+    	Plan.renderer.material = mat;
+    }									
+    if(gameObject.Find("Forme").GetComponent(MeshCollider) == null) {
+    	Plan.AddComponent(MeshCollider);
+    }
 	// la limite peut être abaissée mais il faut éviter une taille nulle car le mesh deviendra invisible
 	if (size.x < 0.1f)
 		size.x = 0.1f;
@@ -45,54 +42,67 @@ function ValidateData () {
  
 // reconstruct mesh based on size and resolution
 function UpdateMesh () {
-	var vertices : Vector3[] = new Vector3[(resolutionX + 1) * (resolutionZ + 1)];
-	var uv : Vector2[] = new Vector2[vertices.Length];
-	var normals : Vector3[] = new Vector3[vertices.Length];
-	var z : int;
-	var x : int;
-	var i : int = 0;
-	ValidateData ();
-	
+	// check 
+	ValidateData();
+	// update size of newVertices and newTriangles
+	newVertices = new Vector3[(resolutionX + 1) * (resolutionZ + 1)];
+	newTriangles = new int[resolutionX * resolutionZ * 6];
+	var uv : Vector2[] = new Vector2[newVertices.Length];
+
 	// int i sert juste à accéder aux éléments des tableaux simplement
-	// on utilise l'opérateur <= et non < car la taille des tableaux est de (resolutionX + 1) * (resolutionY + 1)
-	for (z = 0; z <= resolutionZ; z++) {
-		for (x = 0; x <= resolutionX; x++) {
-			vertices[i] = new Vector3 (x * size.x / resolutionX, 0, z * size.y / resolutionZ);
+	var i : int = 0;
+	
+	// create vertices
+	for (var z : int = 0; z <= resolutionZ; z++) {
+		for (var x : int = 0; x <= resolutionX; x++) {
+			newVertices[i] = Vector3 (x * size.x / resolutionX, 0, z * size.y / resolutionZ);
 			if (center) {
-				vertices[i] -= new Vector3 (size.x / 2, 0, size.y / 2);
+				newVertices[i] -= Vector3 (size.x / 2, 0, size.y / 2);
 			}
 			// le cast en float sert à éviter la division entière de 2 int
-			uv[i] = new Vector2 ((x*1.0) / resolutionX, (z*1.0) / resolutionZ);
-			// toutes les normales pointent vers le haut
-			normals[i++] = Vector3.up;
+			uv[i] = Vector2 ((x*1.0) / resolutionX, (z*1.0) / resolutionZ);
+			i++;
 		}
 	}
+	
 	i = 0;
-	var tris : int[] = new int[resolutionX * resolutionZ * 6];
+	// create triangles
 	for (z = 0; z < resolutionZ; z++) {
 		for (x = 0; x < resolutionX; x++) {
-			tris[i + 5] =
-			tris[i    ] = z * (resolutionX + 1) + x;
-			tris[i + 1] = (z + 1) * (resolutionX + 1) + x;
-			tris[i + 2] =
-			tris[i + 3] = (z + 1) * (resolutionX + 1) + x + 1;
-			tris[i + 4] = z * (resolutionX + 1) + x + 1;
+			newTriangles[i + 5] =
+			newTriangles[i    ] = z * (resolutionX + 1) + x;
+			newTriangles[i + 1] = (z + 1) * (resolutionX + 1) + x;
+			newTriangles[i + 2] =
+			newTriangles[i + 3] = (z + 1) * (resolutionX + 1) + x + 1;
+			newTriangles[i + 4] = z * (resolutionX + 1) + x + 1;
 			i += 6;
 		}
 	}
-	mesh.Clear ();
+	
+	//create a new mesh, assign the vertices and triangles
+    var newMesh : Mesh = new Mesh ();
+    newMesh.name = "Procedural Plane";    
+	newMesh.Clear ();
 	// cette ligne sert à nettoyer les données du mesh
 	// Unity vérifie si les indices des tris ne sont pas en dehors du tableau
 	// de vertices, ce qui peut facilement se produire si on en assigne de
 	// nouveaux alors que le mesh contient toujours les anciens tris
 	// (vous obtiendrez une jolie exception dans ce cas !)
-	mesh.vertices = vertices;
-	mesh.uv = uv;
-	mesh.normals = normals;
-	mesh.SetIndices (tris, MeshTopology.Triangles, 0);
-	// identique à mesh.triangles = tris; ou mesh.SetTriangles (tris, 0);
-	// 0 est l'index du submesh
-	mesh.RecalculateBounds ();
-	gameObject.GetComponent(MeshFilter).mesh = mesh;
-	gameObject.GetComponent(MeshCollider).sharedMesh = mesh;
+	newMesh.vertices = newVertices;
+	newMesh.uv = uv;
+	newMesh.triangles = newTriangles;
+	newMesh.RecalculateNormals();                               	//recalculate normals, bounds and optimize
+    newMesh.RecalculateBounds();
+    newMesh.Optimize(); 
+    
+    (Plan.GetComponent(MeshFilter) as MeshFilter).mesh = newMesh;  	//assign the created mesh as the used mesh 
+}
+
+// called when the script is loaded or a value is changed in the inspector
+function OnValidate () {
+	UpdateMesh ();
+}
+
+function OnApplicationQuit () {
+	
 }

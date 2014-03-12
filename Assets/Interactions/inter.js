@@ -7,10 +7,12 @@ var target : Transform;
 var camera : Transform;
 
 function Start () {
-	transform.LookAt(target);
+	
 }
 
 function Update () {
+	target = gameObject.Find("Forme").transform;
+	transform.LookAt(target);
 	transform.RotateAround (target.position, target.up, Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime);
 	transform.RotateAround (target.position, transform.right, Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime);
 	if (Input.GetKey(KeyCode.KeypadMinus))

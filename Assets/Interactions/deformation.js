@@ -1,5 +1,5 @@
 ﻿#pragma strict
-
+/*
 var plan : PlaneMesh;
 var meshTriangles : int[];  
 var min : float = 10000;
@@ -66,4 +66,4 @@ function Update () {
 	mesh2.vertices[index] = newpoint;
 	plan.mesh = mesh2;
 	plan.mesh.RecalculateBounds();	
-}
+}*/
