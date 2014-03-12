@@ -29,6 +29,22 @@ function Start () {
 	
 	for (var j : int = 0; j <= 2*(nbPoints-2); ) {
 		newTriangles[12*j/2] = j;
+		newTriangles[12*j/2+1] = j+3;
+		newTriangles[12*j/2+2] = j+2;
+		
+		newTriangles[12*j/2+3] = j;
+		newTriangles[12*j/2+4] = j+1;
+		newTriangles[12*j/2+5] = j+3;
+		
+		newTriangles[12*j/2+6] = j+1;
+		newTriangles[12*j/2+7] = 2*nbPoints+1;
+		newTriangles[12*j/2+8] = j+3;
+		
+		newTriangles[12*j/2+9] = j+2;
+		newTriangles[12*j/2+10] = 2*nbPoints;
+		newTriangles[12*j/2+11] = j;
+		
+		/*newTriangles[12*j/2] = j;
 		newTriangles[12*j/2+1] = j+2;
 		newTriangles[12*j/2+2] = j+3;
 		
@@ -42,27 +58,26 @@ function Start () {
 		
 		newTriangles[12*j/2+9] = j+2;
 		newTriangles[12*j/2+10] = j;
-		newTriangles[12*j/2+11] = 2*nbPoints;
-		
+		newTriangles[12*j/2+11] = 2*nbPoints;*/
 		j += 2;
 	}
 	
 	var k : int = 2*(nbPoints-1);
 	newTriangles[12*k/2] = k;
-	newTriangles[12*k/2+1] = 0;
-	newTriangles[12*k/2+2] = 1;
+	newTriangles[12*k/2+1] = 1;
+	newTriangles[12*k/2+2] = 0;
 	
 	newTriangles[12*k/2+3] = k;
-	newTriangles[12*k/2+4] = 1;
-	newTriangles[12*k/2+5] = k+1;
+	newTriangles[12*k/2+4] = k+1;
+	newTriangles[12*k/2+5] = 1;
 	
 	newTriangles[12*k/2+6] = k+1;
-	newTriangles[12*k/2+7] = 1;
-	newTriangles[12*k/2+8] = 2*nbPoints+1;
+	newTriangles[12*k/2+7] = 2*nbPoints+1;
+	newTriangles[12*k/2+8] = 1;
 	
 	newTriangles[12*k/2+9] = 0;
-	newTriangles[12*k/2+10] = k;
-	newTriangles[12*k/2+11] = 2*nbPoints;
+	newTriangles[12*k/2+10] = 2*nbPoints;
+	newTriangles[12*k/2+11] = k;
  
     var newMesh : Mesh = new Mesh ();                               	//create a new mesh, assign the vertices and triangles
         newMesh.Clear();
