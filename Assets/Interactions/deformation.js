@@ -1,8 +1,9 @@
 ﻿#pragma strict
-/*
-var plan : PlaneMesh;
-var meshTriangles : int[];  
-var min : float = 10000;
+
+var Forme : MeshFilter;  
+var meshTriangles : int[];
+var meshVertices : Vector3[];
+var min : float;
 var closestpoint : Vector3 = new Vector3(0,0,0);
 var index : int;
 
@@ -11,17 +12,31 @@ var hitinfo : RaycastHit;
 var hitPoint : Vector3;
 var triIndex : int;
 var p : Vector3[] = new Vector3[3];
+var newpoint : Vector3;
 
+var cube : GameObject;
 function Start () {
-
+	//on récupère l'objet possédant le maillage
+	Forme = gameObject.Find("Forme").GetComponent(MeshFilter); 
+	// on récupère les points qui composent le mesh
+	meshTriangles = Forme.mesh.triangles;
+	// on récupère les 3 poins composant le triangle numéro triIndex.
+	meshVertices = Forme.mesh.vertices;
 }
 
 function Update () {
-// clique gauche
-	if (Input.GetMouseButton(0)) {
+	
+	CheckTriangle();
+	UpdateMesh();
+	
+}
+
+function CheckTriangle () {
+	// clique gauche
+	if (Input.GetMouseButtonDown(0)) {
 		// on créé un rayon 
 		ray = gameObject.Find("Main Camera").camera.ScreenPointToRay (Input.mousePosition);
-		Debug.DrawRay (ray.origin, ray.direction * 10, Color.yellow);
+		
 		var distance : float = Mathf.Infinity; 
 		// si le rayon frappe un objet
 		if (Physics.Raycast(ray, hitinfo, distance)){
@@ -35,35 +50,68 @@ function Update () {
 			Debug.Log("no collision");
 		}
 	}
-// on séléctionne le point du maillage le plus proche  
-	//on récupère l'objet possédant le maillage
-	plan = gameObject.GetComponent("PlaneMesh") as PlaneMesh; 
-	// on récupère les points qui composent le mesh
-	// meshpoints est un tableau contenant les indices des triangles.
-	meshTriangles = plan.mesh.triangles;
-	// on récupère les 3 poins composant le triangle numéro triIndex.
-	var meshVertices : Vector3[] = plan.mesh.vertices;
+	if (Input.GetMouseButton(0)) Debug.DrawRay (ray.origin, ray.direction*100, Color.yellow);
+}
+
+function UpdateMesh () {
+if (Input.GetMouseButton(0)) {
+	// tableau des trois points du triangle heurté.
 	p = [meshVertices[meshTriangles[3*triIndex]],
 		 meshVertices[meshTriangles[3*triIndex+1]],
 		 meshVertices[meshTriangles[3*triIndex+2]]
 		];
+		
 	//on calcule le point le plus proche et on le met dans closestpoint 
+	min = Vector3.Distance(p[1], hitPoint);
 	for (var i : int = 0; i < 3; i++) {
 		var point : Vector3 = p[i];
 		var d : float = Vector3.Distance(point, hitPoint);
 			if (d <= min) { 
 				min = d;
 				closestpoint = point;
-				//attention
-				index = triIndex + i;
+				index = meshTriangles[3*triIndex + i];
 			}
 	}
-	// on récupère la position de la souris en hauteur
 	// on modifie le point closestpoint dans le mesh
-	var mesh2 : Mesh = plan.mesh;
-	var newpoint : Vector3 = closestpoint;
-	newpoint.y = Input.mousePosition.y;
-	mesh2.vertices[index] = newpoint;
-	plan.mesh = mesh2;
-	plan.mesh.RecalculateBounds();	
-}*/
+	newpoint = closestpoint;
+	print(hitPoint);
+	print(newpoint);
+//	CheckNewPosition(Input.mousePosition);
+	newpoint = gameObject.Find("Main Camera").camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, hitPoint.z));
+	print(newpoint);
+	var oldMesh : Mesh = gameObject.Find("Forme").GetComponent(MeshFilter).mesh;
+	var meshVertices2 : Vector3[] = oldMesh.vertices;
+	meshVertices2[index] = newpoint;
+	oldMesh.vertices = meshVertices2;
+	oldMesh.RecalculateNormals();                               
+    oldMesh.RecalculateBounds();
+    oldMesh.Optimize(); 
+	
+	
+	}
+}
+
+function drawCube () {
+	cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	cube.transform.parent = gameObject.Find("Forme").transform;
+	cube.transform.position = closestpoint;
+	cube.renderer.material.color = Color.red;
+	cube.transform.localScale = Vector3(0.1,0.1,0.1);
+}
+
+function CheckNewPosition (pos : Vector2) {
+	/*if (pos.x > 10) {
+		newpoint.x = 10;
+	}*/
+	print(pos);
+	if (pos.y > 5) {
+		newpoint.y = 5;
+	}/*
+	if (pos.z > 20) {
+		point.z = 20;
+	}*/
+}
+
+function OnValidate () {
+	UpdateMesh();
+}

@@ -96,13 +96,17 @@ function UpdateMesh () {
     newMesh.Optimize(); 
     
     (Plan.GetComponent(MeshFilter) as MeshFilter).mesh = newMesh;  	//assign the created mesh as the used mesh 
+    Plan.GetComponent(MeshCollider).sharedMesh = newMesh; 
 }
 
 // called when the script is loaded or a value is changed in the inspector
 function OnValidate () {
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+		gameObject.Find("Forme").AddComponent("deformation");
+	}
 	UpdateMesh ();
 }
 
 function OnApplicationQuit () {
-	
+	Destroy(gameObject.Find("Forme"));
 }

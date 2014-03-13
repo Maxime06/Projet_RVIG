@@ -89,6 +89,9 @@ function UpdateMesh () {
 
 // called when the script is loaded or a value is changed in the inspector
 function OnValidate () {
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+		gameObject.Find("Forme").AddComponent("deformation");
+	}
 	UpdateMesh ();
 }
 
