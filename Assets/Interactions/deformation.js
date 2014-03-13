@@ -77,7 +77,10 @@ if (Input.GetMouseButton(0)) {
 	print(hitPoint);
 	print(newpoint);
 //	CheckNewPosition(Input.mousePosition);
-	newpoint = gameObject.Find("Main Camera").camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, hitPoint.z));
+	var cam = gameObject.Find("Main Camera").camera;
+	// troisième paramètre : distance de la caméra 
+	// donc il faut placer le z par rapport à la caméra.
+	newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, (hitPoint.z- cam.transform.position.z)));
 	print(newpoint);
 	var oldMesh : Mesh = gameObject.Find("Forme").GetComponent(MeshFilter).mesh;
 	var meshVertices2 : Vector3[] = oldMesh.vertices;
