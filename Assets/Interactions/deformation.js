@@ -85,7 +85,7 @@ if (Input.GetMouseButton(0)) {
 	oldMesh.RecalculateNormals();                               
     oldMesh.RecalculateBounds();
     oldMesh.Optimize();
-    gameObject.Find("Forme").GetComponent(MeshCollider).mesh = oldMesh; 
+    gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = oldMesh; 
 	}
 }
 
