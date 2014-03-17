@@ -43,8 +43,6 @@ function CheckTriangle () {
 			// get the hit point
 			hitPoint = hitinfo.point;
 			triIndex = hitinfo.triangleIndex;
-		    print(hitPoint);
-		    print(triIndex);
 		}
 		else {
 			Debug.Log("no collision");
@@ -62,7 +60,7 @@ if (Input.GetMouseButton(0)) {
 		];
 		
 	//on calcule le point le plus proche et on le met dans closestpoint 
-	min = Vector3.Distance(p[1], hitPoint);
+	min = Vector3.Distance(p[0], hitPoint);
 	for (var i : int = 0; i < 3; i++) {
 		var point : Vector3 = p[i];
 		var d : float = Vector3.Distance(point, hitPoint);
@@ -74,23 +72,20 @@ if (Input.GetMouseButton(0)) {
 	}
 	// on modifie le point closestpoint dans le mesh
 	newpoint = closestpoint;
-	print(hitPoint);
-	print(newpoint);
-//	CheckNewPosition(Input.mousePosition);
+	//drawCube();
 	var cam = gameObject.Find("Main Camera").camera;
 	// troisième paramètre : distance de la caméra 
 	// donc il faut placer le z par rapport à la caméra.
 	newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, (hitPoint.z- cam.transform.position.z)));
-	print(newpoint);
 	var oldMesh : Mesh = gameObject.Find("Forme").GetComponent(MeshFilter).mesh;
-	var meshVertices2 : Vector3[] = oldMesh.vertices;
-	meshVertices2[index] = newpoint;
-	oldMesh.vertices = meshVertices2;
+	var meshVertices : Vector3[] = oldMesh.vertices;
+	meshVertices[index] = newpoint;
+	meshVertices[index+(meshVertices.Length/2)] = newpoint;
+	oldMesh.vertices = meshVertices;
 	oldMesh.RecalculateNormals();                               
     oldMesh.RecalculateBounds();
-    oldMesh.Optimize(); 
-	
-	
+    oldMesh.Optimize();
+    gameObject.Find("Forme").GetComponent(MeshCollider).mesh = oldMesh; 
 	}
 }
 
@@ -100,21 +95,4 @@ function drawCube () {
 	cube.transform.position = closestpoint;
 	cube.renderer.material.color = Color.red;
 	cube.transform.localScale = Vector3(0.1,0.1,0.1);
-}
-
-function CheckNewPosition (pos : Vector2) {
-	/*if (pos.x > 10) {
-		newpoint.x = 10;
-	}*/
-	print(pos);
-	if (pos.y > 5) {
-		newpoint.y = 5;
-	}/*
-	if (pos.z > 20) {
-		point.z = 20;
-	}*/
-}
-
-function OnValidate () {
-	UpdateMesh();
 }

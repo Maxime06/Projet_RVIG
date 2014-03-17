@@ -7,6 +7,7 @@ var resolutionX : int = 10;
 var resolutionZ : int = 10;
 private var newVertices : Vector3[] = new Vector3[(resolutionX + 1) * (resolutionZ + 1)];
 private var newTriangles : int[] = new int[resolutionX * resolutionZ * 6];
+private var newUvs : Vector2[] = new Vector2[newVertices.Length];
 
 function Start () {
 
@@ -47,7 +48,7 @@ function UpdateMesh () {
 	// update size of newVertices and newTriangles
 	newVertices = new Vector3[(resolutionX + 1) * (resolutionZ + 1)];
 	newTriangles = new int[resolutionX * resolutionZ * 6];
-	var uv : Vector2[] = new Vector2[newVertices.Length];
+	newUvs = new Vector2[newVertices.Length];
 
 	// int i sert juste à accéder aux éléments des tableaux simplement
 	var i : int = 0;
@@ -60,7 +61,7 @@ function UpdateMesh () {
 				newVertices[i] -= Vector3 (size.x / 2, 0, size.y / 2);
 			}
 			// le cast en float sert à éviter la division entière de 2 int
-			uv[i] = Vector2 ((x*1.0) / resolutionX, (z*1.0) / resolutionZ);
+			newUvs[i] = Vector2 ((x*1.0) / resolutionX, (z*1.0) / resolutionZ);
 			i++;
 		}
 	}
@@ -89,7 +90,7 @@ function UpdateMesh () {
 	// nouveaux alors que le mesh contient toujours les anciens tris
 	// (vous obtiendrez une jolie exception dans ce cas !)
 	newMesh.vertices = newVertices;
-	newMesh.uv = uv;
+	newMesh.uv = newUvs;
 	newMesh.triangles = newTriangles;
 	newMesh.RecalculateNormals();                               	//recalculate normals, bounds and optimize
     newMesh.RecalculateBounds();
@@ -105,8 +106,47 @@ function OnValidate () {
 		gameObject.Find("Forme").AddComponent("deformation");
 	}
 	UpdateMesh ();
+	OtherFace();
 }
 
 function OnApplicationQuit () {
 	Destroy(gameObject.Find("Forme"));
+}
+
+function OtherFace () {
+    var mesh = gameObject.Find("Forme").GetComponent(MeshFilter).sharedMesh;
+	var vertices = mesh.vertices;
+	var uv = mesh.uv;
+	var normals = mesh.normals;
+	var szV = vertices.length;
+	var newVerts = new Vector3[szV*2];
+	var newUv = new Vector2[szV*2];
+	var newNorms = new Vector3[szV*2];
+	for (var j=0; j< szV; j++){
+		// duplicate vertices and uvs:
+		newVerts[j] = newVerts[j+szV] = vertices[j];
+		newUv[j] = newUv[j+szV] = uv[j];
+		// copy the original normals...
+		newNorms[j] = normals[j];
+		// and revert the new ones
+		newNorms[j+szV] = -normals[j];
+	}
+	var triangles = mesh.triangles;
+	var szT = triangles.length;
+	var newTris = new int[szT*2]; // double the triangles
+	for (var i=0; i< szT; i+=3){
+		// copy the original triangle
+		newTris[i] = triangles[i];
+		newTris[i+1] = triangles[i+1];
+		newTris[i+2] = triangles[i+2];
+		// save the new reversed triangle
+		j = i+szT; 
+		newTris[j] = triangles[i]+szV;
+		newTris[j+2] = triangles[i+1]+szV;
+		newTris[j+1] = triangles[i+2]+szV;
+	}
+	mesh.vertices = newVerts;
+	mesh.uv = newUv;
+	mesh.normals = newNorms;
+    mesh.triangles = newTris; // assign triangles last!
 }
