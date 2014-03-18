@@ -22,10 +22,14 @@ function Start () {
 	meshTriangles = Forme.mesh.triangles;
 	// on récupère les 3 poins composant le triangle numéro triIndex.
 	meshVertices = Forme.mesh.vertices;
+	//on créé un cube
+	cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	cube.transform.parent = gameObject.Find("Forme").transform;
+	cube.renderer.material.color = Color.red;
+	cube.transform.localScale = Vector3(0.1,0.1,0.1);
 }
 
 function Update () {
-	
 	CheckTriangle();
 	UpdateMesh();
 	
@@ -72,11 +76,11 @@ if (Input.GetMouseButton(0)) {
 	}
 	// on modifie le point closestpoint dans le mesh
 	newpoint = closestpoint;
-	//drawCube();
 	var cam = gameObject.Find("Main Camera").camera;
 	// troisième paramètre : distance de la caméra 
 	// donc il faut placer le z par rapport à la caméra.
 	newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, (hitPoint.z- cam.transform.position.z)));
+	cube.transform.position = newpoint;
 	var oldMesh : Mesh = gameObject.Find("Forme").GetComponent(MeshFilter).mesh;
 	var meshVertices : Vector3[] = oldMesh.vertices;
 	meshVertices[index] = newpoint;
@@ -87,12 +91,4 @@ if (Input.GetMouseButton(0)) {
     oldMesh.Optimize();
     gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = oldMesh; 
 	}
-}
-
-function drawCube () {
-	cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-	cube.transform.parent = gameObject.Find("Forme").transform;
-	cube.transform.position = closestpoint;
-	cube.renderer.material.color = Color.red;
-	cube.transform.localScale = Vector3(0.1,0.1,0.1);
 }

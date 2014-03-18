@@ -2,11 +2,11 @@
 
 //@MenuItem ("GameObject/Create Other/Parallelepipoid")                  		//add it to the menu
 var Sphere : GameObject;
-var parrallele : float = 200;
-var meridian : float = 200;
+var parrallele : float = 20;
+var meridian : float = 20;
 private var newVertices : Vector3[] = new Vector3[(parrallele+1)*(meridian+1)];
 private var newTriangles : int[]  = new int[parrallele * meridian * 6];
-var radius : int = 5;
+var radius : int = 8;
 
 function Start () {
 
@@ -30,6 +30,9 @@ function ValidateData () {
     if(gameObject.Find("Forme").GetComponent(MeshCollider) == null) {
     	Sphere.AddComponent(MeshCollider);
     }
+    if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+		gameObject.Find("Forme").AddComponent("deformation");
+	}
 }
 
 function UpdateMesh () {
@@ -84,14 +87,11 @@ function UpdateMesh () {
         newMesh.Optimize();                             
              
     (Sphere.GetComponent(MeshFilter) as MeshFilter).mesh = newMesh;  	//assign the created mesh as the used mesh
- 
+ 	  Sphere.GetComponent(MeshCollider).sharedMesh = newMesh; 
 }
 
 // called when the script is loaded or a value is changed in the inspector
 function OnValidate () {
-	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
-		gameObject.Find("Forme").AddComponent("deformation");
-	}
 	UpdateMesh ();
 	OtherFace();
 }

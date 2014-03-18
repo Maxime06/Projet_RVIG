@@ -32,6 +32,11 @@ function ValidateData () {
     if(gameObject.Find("Forme").GetComponent(MeshCollider) == null) {
     	Plan.AddComponent(MeshCollider);
     }
+    if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+		gameObject.Find("Forme").AddComponent("deformation");
+	}
+    
+    
 	// la limite peut être abaissée mais il faut éviter une taille nulle car le mesh deviendra invisible
 	if (size.x < 0.1f)
 		size.x = 0.1f;
@@ -102,15 +107,12 @@ function UpdateMesh () {
 
 // called when the script is loaded or a value is changed in the inspector
 function OnValidate () {
-	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
-		gameObject.Find("Forme").AddComponent("deformation");
-	}
 	UpdateMesh ();
 	OtherFace();
 }
 
 function OnApplicationQuit () {
-	Destroy(gameObject.Find("Forme"));
+	Destroy(this);
 }
 
 function OtherFace () {

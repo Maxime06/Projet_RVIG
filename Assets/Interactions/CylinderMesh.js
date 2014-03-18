@@ -29,6 +29,9 @@ function ValidateData () {
     if(gameObject.Find("Forme").GetComponent(MeshCollider) == null) {
     	Cylinder.AddComponent(MeshCollider);
     }
+    if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+		gameObject.Find("Forme").AddComponent("deformation");
+	}
 }
     
 function UpdateMesh () {
@@ -105,14 +108,11 @@ function UpdateMesh () {
         newMesh.Optimize();                             
              
     (Cylinder.GetComponent(MeshFilter) as MeshFilter).mesh = newMesh;  	//assign the created mesh as the used mesh
- 
+ 	Cylinder.GetComponent(MeshCollider).sharedMesh = newMesh;
 }
 
 // called when the script is loaded or a value is changed in the inspector
 function OnValidate () {
-	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
-		gameObject.Find("Forme").AddComponent("deformation");
-	}
 	UpdateMesh ();
 	OtherFace();
 }
