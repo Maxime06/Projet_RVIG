@@ -33,7 +33,7 @@ function ValidateData () {
     	Plan.AddComponent(MeshCollider);
     }
     if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
-		gameObject.Find("Forme").AddComponent("deformation");
+		gameObject.Find("Forme").AddComponent("deformation_arrete");
 	}
     
     

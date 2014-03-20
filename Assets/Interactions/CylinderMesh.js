@@ -1,6 +1,4 @@
-﻿#pragma strict
-
-var Cylinder : GameObject;
+﻿var Cylinder : GameObject;
 var radius : float = 5f;
 var height : float = 8f;
 var nbPoints : int = 8;
