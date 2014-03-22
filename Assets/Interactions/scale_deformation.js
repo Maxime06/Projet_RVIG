@@ -16,35 +16,22 @@ var newpoint : Vector3 = new Vector3(0,0,0);
 var AllCubes : GameObject;
 var cube : GameObject;
 function Start () {
-	if (transform.Find("AllCubes") == null) {
-		AllCubes = new GameObject("AllCubes");
-	}
-	//on récupère l'objet possédant le maillage
-	FormeFilter = gameObject.Find("Forme").GetComponent(MeshFilter); 
-	// on récupère les points qui composent le mesh
-	meshTriangles = FormeFilter.mesh.triangles;
-	// on récupère les 3 poins composant le triangle numéro triIndex.
-	meshVertices = FormeFilter.mesh.vertices;
-	//on créé un cube
-	if (transform.Find("Cube1")==null) {
-		CreateCube("Cube1");
-	}
-
-	AllCubes.transform.parent = FormeFilter.transform;
-	SetCube(false);
 }
 
 function Update () {
-boolean res = CheckTriangle();
-Debug.Log(res);
-//	if () {
-//		UpdateMesh();
-//	}
+	if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetMouseButton(0)) {
+		var Plan = GameObject.Find("Main Camera").GetComponent("meshPlane");
+		print(Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")).x);
+		print(Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")).y);
+	}
+	//CheckTriangle();
+//	UpdateMesh();
+	
 }
 
-function CheckTriangle () : boolean {
+function CheckTriangle () {
 	// clique gauche
-	if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.RightControl)) {
+	if (Input.GetMouseButtonDown(0)) {
 		// on créé un rayon 
 		ray = gameObject.Find("Main Camera").camera.ScreenPointToRay (Input.mousePosition);
 		
@@ -54,18 +41,16 @@ function CheckTriangle () : boolean {
 			// get the hit point
 			hitPoint = hitinfo.point;
 			triIndex = hitinfo.triangleIndex;
-			return true;
 		}
 		else {
 			Debug.Log("no collision");
 		}
 	}
 	if (Input.GetMouseButton(0)) Debug.DrawRay (ray.origin, ray.direction*100, Color.yellow);
-	return false;
 }
 
 function UpdateMesh () {
-if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.RightControl)) {
+if (Input.GetMouseButton(0)) {
 	// tableau des trois points du triangle heurté.
 	p = [meshVertices[meshTriangles[3*triIndex]],
 		 meshVertices[meshTriangles[3*triIndex+1]],
@@ -105,12 +90,4 @@ if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.RightControl)) {
 
 function SetCube (b : boolean) {
 	cube.SetActive(b);
-}
-
-function CreateCube (cubename : String) {
-	cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-	cube.name = cubename;
-	cube.transform.parent = AllCubes.transform;
-	cube.renderer.material.color = Color.red;
-	cube.transform.localScale = Vector3(0.1,0.1,0.1);
 }

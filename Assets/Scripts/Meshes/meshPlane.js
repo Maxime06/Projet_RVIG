@@ -2,7 +2,7 @@
 
 var Plan : GameObject;
 var center : boolean = true;
-var size : Vector2 = new Vector2 (10, 10);
+public static var size : Vector2 = new Vector2 (10, 10);
 var resolutionX : int = 10;
 var resolutionZ : int = 10;
 private var newVertices : Vector3[] = new Vector3[(resolutionX + 1) * (resolutionZ + 1)];
@@ -37,13 +37,23 @@ function ValidateData () {
     if(gameObject.Find("Forme").GetComponent(MeshCollider) == null) {
     	Plan.AddComponent(MeshCollider);
     }
-    if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_arrete") == null) {
+    if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+		gameObject.Find("Forme").AddComponent("deformation");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_arrete") == null) {
 		gameObject.Find("Forme").AddComponent("deformation_arrete");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_face") == null) {
+		gameObject.Find("Forme").AddComponent("deformation_face");
 	}
 	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("inter") == null) {
 		gameObject.Find("Main Camera").AddComponent("inter");
 	}
-    
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("choose_deformation") == null) {
+		gameObject.Find("Forme").AddComponent("choose_deformation");
+	}
+    (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
+	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
     
 	// la limite peut être abaissée mais il faut éviter une taille nulle car le mesh deviendra invisible
 	if (size.x < 0.1f)
@@ -116,11 +126,7 @@ function UpdateMesh () {
 // called when the script is loaded or a value is changed in the inspector
 function OnValidate () {
 	UpdateMesh ();
-	//OtherFace();
-}
-
-function OnApplicationQuit () {
-	Destroy(this);
+	OtherFace();
 }
 
 function OtherFace () {
