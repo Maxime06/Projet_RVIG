@@ -103,6 +103,12 @@ function UpdateMesh () {
 		}
 	}
 	
+	/*var colors : Color[] = new Color[newVertices.Length];
+	var c : int = 0;
+	for (c = 0; c < newVertices.Length; c++) {
+		colors[c] = Color.red;
+	}*/
+	
 	//create a new mesh, assign the vertices and triangles
     var newMesh : Mesh = new Mesh ();
     newMesh.name = "Procedural Plane";    
@@ -114,6 +120,7 @@ function UpdateMesh () {
 	// (vous obtiendrez une jolie exception dans ce cas !)
 	newMesh.vertices = newVertices;
 	newMesh.uv = newUvs;
+	//newMesh.colors = colors;
 	newMesh.triangles = newTriangles;
 	newMesh.RecalculateNormals();                               	//recalculate normals, bounds and optimize
     newMesh.RecalculateBounds();

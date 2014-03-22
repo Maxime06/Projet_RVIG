@@ -1,5 +1,5 @@
 ﻿#pragma strict
-
+var res : boolean = false;
 var FormeFilter : MeshFilter;  
 var meshTriangles : int[];
 var meshVertices : Vector3[];
@@ -35,14 +35,18 @@ function Start () {
 }
 
 function Update () {
-boolean res = CheckTriangle();
-Debug.Log(res);
-//	if () {
-//		UpdateMesh();
-//	}
+	CheckTriangle();
+	if (res) {
+		UpdateMesh();
+	}
+	// on active le cube gris quand on lache le clique
+	if(Input.GetMouseButtonUp(0)) {
+		GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(true);
+	}
+	
 }
 
-function CheckTriangle () : boolean {
+function CheckTriangle () {
 	// clique gauche
 	if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.RightControl)) {
 		// on créé un rayon 
@@ -54,14 +58,16 @@ function CheckTriangle () : boolean {
 			// get the hit point
 			hitPoint = hitinfo.point;
 			triIndex = hitinfo.triangleIndex;
-			return true;
+			// on désactive le cube gris quand on clique
+			GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(false);
+			res = true;
 		}
 		else {
 			Debug.Log("no collision");
+			res = false;
 		}
 	}
 	if (Input.GetMouseButton(0)) Debug.DrawRay (ray.origin, ray.direction*100, Color.yellow);
-	return false;
 }
 
 function UpdateMesh () {
@@ -88,7 +94,7 @@ if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.RightControl)) {
 	var cam = gameObject.Find("Main Camera").camera;
 	// troisième paramètre : distance de la caméra 
 	// donc il faut placer le z par rapport à la caméra.
-	newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, (hitPoint.z- cam.transform.position.z)));
+	newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
 	cube.transform.position = newpoint;
 	SetCube(true);
 	var oldMesh : Mesh = gameObject.Find("Forme").GetComponent(MeshFilter).mesh;
