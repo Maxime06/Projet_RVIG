@@ -33,12 +33,26 @@ function ValidateData () {
     if(gameObject.Find("Forme").GetComponent(MeshCollider) == null) {
     	Cylinder.AddComponent(MeshCollider);
     }
-    if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_arrete") == null) {
+      if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+		gameObject.Find("Forme").AddComponent("deformation");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_arrete") == null) {
 		gameObject.Find("Forme").AddComponent("deformation_arrete");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_face") == null) {
+		gameObject.Find("Forme").AddComponent("deformation_face");
 	}
 	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("inter") == null) {
 		gameObject.Find("Main Camera").AddComponent("inter");
 	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("choose_deformation") == null) {
+		gameObject.Find("Forme").AddComponent("choose_deformation");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("assistance") == null) {
+		gameObject.Find("Forme").AddComponent("assistance");
+	}
+    (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
+	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
 }
     
 function UpdateMesh () {

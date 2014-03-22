@@ -21,7 +21,7 @@ function Start () {
 function ValidateData () {
     // create Plane if don't exists
 	if(gameObject.Find("Forme") == null) {
-		Plan = new GameObject ("Forme");
+		Plan = GameObject ("Forme");
 	}
 	//add a meshfilter
 	if(gameObject.Find("Forme").GetComponent(MeshFilter) == null) {
@@ -52,7 +52,10 @@ function ValidateData () {
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("choose_deformation") == null) {
 		gameObject.Find("Forme").AddComponent("choose_deformation");
 	}
-    (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("assistance") == null) {
+		gameObject.Find("Forme").AddComponent("assistance");
+	}
+    (gameObject.Find("Forme").GetComponent("deformation") as MonoBehaviour).enabled = false;
 	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
     
 	// la limite peut être abaissée mais il faut éviter une taille nulle car le mesh deviendra invisible

@@ -1,5 +1,5 @@
 ﻿#pragma strict
-var res : boolean = false;
+var collision : boolean = false;
 var FormeFilter : MeshFilter;  
 var meshTriangles : int[];
 var meshVertices : Vector3[];
@@ -36,12 +36,13 @@ function Start () {
 
 function Update () {
 	CheckTriangle();
-	if (res) {
+	if (collision) {
 		UpdateMesh();
 	}
 	// on active le cube gris quand on lache le clique
 	if(Input.GetMouseButtonUp(0)) {
 		GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(true);
+		GameObject.Find("Forme").transform.Find("AllCubes").gameObject.SetActive(false);
 	}
 	
 }
@@ -60,11 +61,11 @@ function CheckTriangle () {
 			triIndex = hitinfo.triangleIndex;
 			// on désactive le cube gris quand on clique
 			GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(false);
-			res = true;
+			collision = true;
 		}
 		else {
 			Debug.Log("no collision");
-			res = false;
+			collision = false;
 		}
 	}
 	if (Input.GetMouseButton(0)) Debug.DrawRay (ray.origin, ray.direction*100, Color.yellow);

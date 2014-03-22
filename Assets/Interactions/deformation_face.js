@@ -1,5 +1,5 @@
 ﻿#pragma strict
-
+var collision : boolean = false;
 var FormeFilter : MeshFilter;  
 var meshTriangles : int[];
 var meshVertices : Vector3[];
@@ -24,32 +24,32 @@ var AllCubes : GameObject;
 var colors : Color[];
 
 function Start () {
-	if (transform.Find("AllCubes") == null) {
-		AllCubes = new GameObject("AllCubes");
-	}
-	
 	//on récupère l'objet possédant le maillage
 	FormeFilter = gameObject.Find("Forme").GetComponent(MeshFilter); 
 	// on récupère les points qui composent le mesh
 	meshTriangles = FormeFilter.mesh.triangles;
 	// on récupère les 3 poins composant le triangle numéro triIndex.
 	meshVertices = FormeFilter.mesh.vertices;
-	//on créé un cube
+	
+	if (transform.Find("AllCubes") == null) {
+		AllCubes = new GameObject("AllCubes");
+	}
+	AllCubes.transform.parent = FormeFilter.transform;
+	//on créé les cubes
 	if (GameObject.Find("Cube1") == null) {
 		cube1 = CreateCube("Cube1");
 	}
-	//on créé un cube
 	if (GameObject.Find("Cube2") == null) {
 		cube2 = CreateCube("Cube2");
 	}
-	//on créé un cube
 	if (GameObject.Find("Cube3") == null) {
 		cube3 = CreateCube("Cube3");
 	}
-	AllCubes.transform.parent = FormeFilter.transform;
-	SetCubes(false, cube1);
+	//on désactive AllCubes
+	SetCubes(false, AllCubes);	
+	/*SetCubes(false, cube1);
 	SetCubes(false, cube2);
-	SetCubes(false, cube3);
+	SetCubes(false, cube3);*/
 	//colors = new Color[meshVertices.Length];
 	/*while (var c : int = 0 < meshVertices.Length) {
 		colors[c] = Color.red;
@@ -58,7 +58,14 @@ function Start () {
 
 function Update () {
 	CheckTriangle();
-	UpdateMesh();
+	if (collision) {
+		UpdateMesh();
+	}
+	// on active les cubes gris et la ligne grise quand on lache le clique
+	if(Input.GetMouseButtonUp(0)) {
+		GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(true);
+		GameObject.Find("Forme").transform.Find("AllCubes").gameObject.SetActive(false);
+	}
 	
 }
 
@@ -74,9 +81,13 @@ function CheckTriangle () {
 			// get the hit point
 			hitPoint = hitinfo.point;
 			triIndex = hitinfo.triangleIndex;
+			// on désactive les cubes gris quand on clique
+			GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(false);
+			collision = true;
 		}
 		else {
 			Debug.Log("no collision");
+			collision = false;
 		}
 	}
 	if (Input.GetMouseButton(0)) Debug.DrawRay (ray.origin, ray.direction*100, Color.yellow);
@@ -101,19 +112,20 @@ function UpdateMesh () {
 		var cam = gameObject.Find("Main Camera").camera;
 		// troisième paramètre : distance de la caméra 
 		// donc il faut placer le z par rapport à la caméra.
-		var distx12 : float = (newpoint1 - newpoint2).x; 
-		var distz12 : float = (newpoint1 - newpoint2).z;
-		var distx13 : float = (newpoint1 - newpoint3).x; 
-		var distz13 : float = (newpoint1 - newpoint3).z;
+		var distx12 : float = (newpoint2 - newpoint1).x; 
+		var distz12 : float = (newpoint2 - newpoint1).z;
+		var distx13 : float = (newpoint3 - newpoint1).x; 
+		var distz13 : float = (newpoint3 - newpoint1).z;
 		newpoint1 = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
 		newpoint2 = new Vector3(newpoint1.x+distx12, newpoint1.y, newpoint1.z+distz12);
 		newpoint3 = new Vector3(newpoint1.x+distx13, newpoint1.y, newpoint1.z+distz13);
 		cube1.transform.position = newpoint1;
 		cube2.transform.position = newpoint2;
 		cube3.transform.position = newpoint3;
-		SetCubes(true, cube1);
+		SetCubes(true, AllCubes);
+		/*SetCubes(true, cube1);
 		SetCubes(true, cube2);
-		SetCubes(true, cube3);
+		SetCubes(true, cube3);*/
 		/*colors[triIndex] = Color.red;
 		colors[triIndex+1] = Color.red;
 		colors[triIndex+2] = Color.red;*/
@@ -121,12 +133,12 @@ function UpdateMesh () {
 		//update mesh
 		var oldMesh : Mesh = gameObject.Find("Forme").GetComponent(MeshFilter).mesh;
 		var meshVertices : Vector3[] = oldMesh.vertices;
-		meshVertices[index[1]] = newpoint1;
-		meshVertices[index[2]] = newpoint2;
-		meshVertices[index[0]] = newpoint3;
-		meshVertices[index[1]+(meshVertices.Length/2)] = newpoint1;
-		meshVertices[index[2]+(meshVertices.Length/2)] = newpoint2;
-		meshVertices[index[0]+(meshVertices.Length/2)] = newpoint3;
+		meshVertices[index[0]] = newpoint1;
+		meshVertices[index[1]] = newpoint2;
+		meshVertices[index[2]] = newpoint3;
+		meshVertices[index[0]+(meshVertices.Length/2)] = newpoint1;
+		meshVertices[index[1]+(meshVertices.Length/2)] = newpoint2;
+		meshVertices[index[2]+(meshVertices.Length/2)] = newpoint3;
 		oldMesh.vertices = meshVertices;
 		oldMesh.colors = colors;
 		oldMesh.RecalculateNormals();                               
@@ -144,7 +156,7 @@ function CreateCube (cubename : String) : GameObject {
 	var cube : GameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	cube.name = cubename;
 	cube.transform.parent = AllCubes.transform;
-	cube.renderer.material.color = Color.grey;
+	cube.renderer.material.color = Color.red;
 	cube.transform.localScale = Vector3(0.1,0.1,0.1);
 	return cube;
 }

@@ -1,5 +1,5 @@
 ﻿#pragma strict
-
+var collision : boolean = false;
 var FormeFilter : MeshFilter;  
 var meshTriangles : int[];
 var meshVertices : Vector3[];
@@ -20,50 +20,55 @@ var cube1 : GameObject;
 var cube2 : GameObject;
 var AllCubes : GameObject;
 var lineRenderer : LineRenderer;
-function Start () {
 
-	lineRenderer = gameObject.AddComponent(LineRenderer);
-	lineRenderer.material = new Material (Shader.Find("Particles/Additive"));
-	lineRenderer.SetColors(Color.red, Color.red);
-	lineRenderer.SetWidth(0.1,0.1);
-	lineRenderer.SetVertexCount(2);
-	if (transform.Find("AllCubes") == null) {
-		AllCubes = new GameObject("AllCubes");
-	}
-	
+function Start () {
 	//on récupère l'objet possédant le maillage
 	FormeFilter = gameObject.Find("Forme").GetComponent(MeshFilter); 
 	// on récupère les points qui composent le mesh
 	meshTriangles = FormeFilter.mesh.triangles;
 	// on récupère les 3 poins composant le triangle numéro triIndex.
 	meshVertices = FormeFilter.mesh.vertices;
-	//on créé un cube
+	
+	//on créé AllCubes
+	if (transform.Find("AllCubes") == null) {
+		AllCubes = new GameObject("AllCubes");
+	}
+	AllCubes.transform.parent = FormeFilter.transform;
+	
+	// on créé une ligne rouge attachée à AllCubes
+	lineRenderer = GameObject.Find("Forme").transform.Find("AllCubes").gameObject.AddComponent(LineRenderer);
+	lineRenderer.material = new Material (Shader.Find("Particles/Additive"));
+	lineRenderer.SetColors(Color.red, Color.red);
+	lineRenderer.SetWidth(0.1,0.1);
+	lineRenderer.SetVertexCount(2);
+	//on désactive la ligne
+	//(lineRenderer as MonoBehaviour).enabled = false;
+	
 	if (GameObject.Find("Cube1") == null) {
-		cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		cube1.name = "Cube1";
-		cube1.renderer.material.color = Color.red;
-		cube1.transform.localScale = Vector3(0.1,0.1,0.1);
-		cube1.transform.parent = AllCubes.transform;
+		cube1 = CreateCube("Cube1");
 	}
 	//on créé un cube
 	if (GameObject.Find("Cube2") == null) {
-		cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		cube2.name = "Cube2";
-		cube2.renderer.material.color = Color.red;
-		cube2.transform.localScale = Vector3(0.1,0.1,0.1);
-		cube2.transform.parent = AllCubes.transform;
+		cube2 = CreateCube("Cube2");
 	}
 	
-	AllCubes.transform.parent = FormeFilter.transform;
 	
-	SetCubes(false);
+	//on désactive AllCubes
+	SetCubes(false, AllCubes);	
+	
 
 }
 
 function Update () {
 	CheckTriangle();
-	UpdateMesh();
-	
+	if (collision) {
+		UpdateMesh();
+	}
+	// on active les cubes gris et la ligne grise quand on lache le clique
+	if(Input.GetMouseButtonUp(0)) {
+		GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(true);
+		GameObject.Find("Forme").transform.Find("AllCubes").gameObject.SetActive(false);
+	}
 }
 
 function CheckTriangle () {
@@ -78,9 +83,13 @@ function CheckTriangle () {
 			// get the hit point
 			hitPoint = hitinfo.point;
 			triIndex = hitinfo.triangleIndex;
+			// on désactive les cubes gris et la ligne grise quand on clique
+			GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(false);
+			collision = true;
 		}
 		else {
 			Debug.Log("no collision");
+			collision = false;
 		}
 	}
 	if (Input.GetMouseButton(0)) Debug.DrawRay (ray.origin, ray.direction*100, Color.yellow);
@@ -127,14 +136,14 @@ function UpdateMesh () {
 		cube2.transform.position = newpoint2;
 		lineRenderer.SetPosition(0, cube1.transform.position);
 		lineRenderer.SetPosition(1, cube2.transform.position);
-		SetCubes(true);
+		SetCubes(true, AllCubes);	
 		//update mesh
 		var oldMesh : Mesh = gameObject.Find("Forme").GetComponent(MeshFilter).mesh;
 		var meshVertices : Vector3[] = oldMesh.vertices;
 		meshVertices[index[1]] = newpoint1;
 		meshVertices[index[0]] = newpoint2;
-		meshVertices[index[0]+(meshVertices.Length/2)] = newpoint1;
-		meshVertices[index[1]+(meshVertices.Length/2)] = newpoint2;
+		meshVertices[index[1]+(meshVertices.Length/2)] = newpoint1;
+		meshVertices[index[0]+(meshVertices.Length/2)] = newpoint2;
 		oldMesh.vertices = meshVertices;
 		oldMesh.RecalculateNormals();                               
 		oldMesh.RecalculateBounds();
@@ -143,6 +152,15 @@ function UpdateMesh () {
 	}
 }
 
-function SetCubes (b : boolean) {
-	AllCubes.SetActive(b);
+function SetCubes (b : boolean, cube : GameObject) {
+	cube.SetActive(b);
+}
+
+function CreateCube (cubename : String) : GameObject {
+	var cube : GameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	cube.name = cubename;
+	cube.transform.parent = AllCubes.transform;
+	cube.renderer.material.color = Color.red;
+	cube.transform.localScale = Vector3(0.1,0.1,0.1);
+	return cube;
 }

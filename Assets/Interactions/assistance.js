@@ -21,39 +21,46 @@ var cube1_assist : GameObject;
 var cube2_assist : GameObject;
 var cube3_assist : GameObject;
 var AllCubesHelp : GameObject;
-var lineRenderer : LineRenderer;
+var lineRenderer_assist : LineRenderer;
 
 function Start () {
-	if (transform.Find("AllCubesHelp") == null) {
-		AllCubesHelp = new GameObject("AllCubesHelp");
-	}
 	//on récupère l'objet possédant le maillage
 	FormeFilter_assist = gameObject.Find("Forme").GetComponent(MeshFilter); 
 	// on récupère les points qui composent le mesh
 	meshTriangles_assist = FormeFilter_assist.mesh.triangles;
 	// on récupère les 3 poins composant le triangle numéro triIndex.
 	meshVertices_assist = FormeFilter_assist.mesh.vertices;
+	
+	if (transform.Find("AllCubesHelp") == null) {
+		AllCubesHelp = new GameObject("AllCubesHelp");
+	}
+	
 	//on créé les 3 cubes
 	if (transform.Find("CubeHelp1")==null) {
-		cube1_assist = CreateCube("CubeHelp1");
+	cube1_assist = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		CreateCube("CubeHelp1", cube1_assist);
 	}
 	if (transform.Find("CubeHelp2")==null) {
-		cube2_assist = CreateCube("CubeHelp2");
+		cube2_assist = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		CreateCube("CubeHelp2", cube2_assist);
 	}
 	if (transform.Find("CubeHelp3")==null) {
-		cube3_assist = CreateCube("CubeHelp3");
+		cube3_assist = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		CreateCube("CubeHelp3", cube3_assist);
 	}
+	
+	AllCubesHelp.transform.parent = FormeFilter_assist.transform;
 	SetCubes(false, cube1_assist);
 	SetCubes(false, cube2_assist);
 	SetCubes(false, cube3_assist);
 	
-	AllCubesHelp.transform.parent = FormeFilter_assist.transform;
-	/*lineRenderer = gameObject.AddComponent(LineRenderer);
-	lineRenderer.material = new Material (Shader.Find("Particles/Additive"));
-	lineRenderer.SetColors(Color.grey, Color.grey);
-	lineRenderer.SetWidth(0.1,0.1);
-	lineRenderer.SetVertexCount(2);*/
-	// ici ne pas l'afficher
+	lineRenderer_assist = GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.AddComponent(LineRenderer);
+	lineRenderer_assist.material = new Material (Shader.Find("Particles/Additive"));
+	lineRenderer_assist.SetColors(Color.grey, Color.grey);
+	lineRenderer_assist.SetWidth(0.1,0.1);
+	lineRenderer_assist.SetVertexCount(2);
+
+	
 }
 
 function Update () {
@@ -98,7 +105,7 @@ function Update () {
 	}
 	
 	//dans le cas d'une déformation d'une arrete
-	/*if ((GameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled) {
+	if ((GameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled) {
 		// tableau des trois points du triangle heurté.
 		p_assist = [meshVertices_assist[meshTriangles_assist[3*triIndex_assist]],
 			 meshVertices_assist[meshTriangles_assist[3*triIndex_assist+1]],
@@ -128,34 +135,34 @@ function Update () {
 		// on modifie le point closestpoint dans le mesh
 		cube1_assist.transform.position = p2_assist[0];
 		cube2_assist.transform.position = p2_assist[1];
-		lineRenderer.SetPosition(0, cube1_assist.transform.position);
-		lineRenderer.SetPosition(1, cube2_assist.transform.position);
+		lineRenderer_assist.SetPosition(0, cube1_assist.transform.position);
+		lineRenderer_assist.SetPosition(1, cube2_assist.transform.position);
 		SetCubes(true, cube1_assist);
 		SetCubes(true, cube2_assist);
-	}*/
-	
+		
+	}
 	//dans le cas d'une déformation d'une face
-	/*if ((GameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled) {
+	if ((GameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled) {
 		// tableau des trois points du triangle heurté.
-		p_assist = [meshVertices[meshTriangles[3*triIndex]],
-			 meshVertices[meshTriangles[3*triIndex+1]],
-			 meshVertices[meshTriangles[3*triIndex+2]]
+		p_assist = [meshVertices_assist[meshTriangles_assist[3*triIndex_assist]],
+			 meshVertices_assist[meshTriangles_assist[3*triIndex_assist+1]],
+			 meshVertices_assist[meshTriangles_assist[3*triIndex_assist+2]]
 			];
 			
 		//on calcule le point le plus proche et on le met dans closestpoint 
 		for (i = 0; i < 3; i++) {
-				index[i] =  meshTriangles[3*triIndex + i];
+				index_assist[i] =  meshTriangles_assist[3*triIndex_assist + i];
 		}
 		// on modifie le point closestpoint dans le mesh
-		cube1.transform.position = p_assist[0];
-		cube2.transform.position = p_assist[1];
-		cube3.transform.position = p_assist[2];
-		SetCubes(true, cube1);
-		SetCubes(true, cube2);
-		SetCubes(true, cube3);
+		cube1_assist.transform.position = p_assist[0];
+		cube2_assist.transform.position = p_assist[1];
+		cube3_assist.transform.position = p_assist[2];
+		SetCubes(true, cube1_assist);
+		SetCubes(true, cube2_assist);
+		SetCubes(true, cube3_assist);
 		
 	//	colors[index] = colorT;
-	}*/
+	}
 }
 
 
@@ -164,11 +171,10 @@ function SetCubes (b : boolean, cube : GameObject) {
 }
 
 
-function CreateCube (cubename : String) : GameObject {
-	var cube : GameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-	cube.name = cubename;
-	cube.transform.parent = AllCubesHelp.transform;
-	cube.renderer.material.color = Color.grey;
-	cube.transform.localScale = Vector3(0.1,0.1,0.1);
-	return cube;
+function CreateCube (cubename : String, cubevar : GameObject){
+	//cubevar = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	cubevar.name = cubename;
+	cubevar.transform.parent = AllCubesHelp.transform;
+	cubevar.renderer.material.color = Color.grey;
+	cubevar.transform.localScale = Vector3(0.1,0.1,0.1);
 }
