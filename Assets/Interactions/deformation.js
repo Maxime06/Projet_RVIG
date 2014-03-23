@@ -13,28 +13,34 @@ var hitPoint : Vector3;
 var triIndex : int;
 var p : Vector3[] = new Vector3[3];
 var newpoint : Vector3 = new Vector3(0,0,0);
+var cube1 : GameObject;
+var cube2 : GameObject;
+var cube3 : GameObject;
 var AllCubes : GameObject;
-var cube : GameObject;
 function Start () {
-	if (transform.Find("AllCubes") == null) {
-		AllCubes = new GameObject("AllCubes");
-	}
 	//on récupère l'objet possédant le maillage
 	FormeFilter = gameObject.Find("Forme").GetComponent(MeshFilter); 
 	// on récupère les points qui composent le mesh
 	meshTriangles = FormeFilter.mesh.triangles;
 	// on récupère les 3 poins composant le triangle numéro triIndex.
 	meshVertices = FormeFilter.mesh.vertices;
-	//on créé un cube
-	if (transform.Find("Cube1")==null) {
-		CreateCube("Cube1");
+	
+	if (transform.Find("AllCubes") == null) {
+		AllCubes = GameObject("AllCubes");
 	}
-
+	else {
+		AllCubes = GameObject.Find("Forme").transform.Find("AllCubes").gameObject;
+	}
 	AllCubes.transform.parent = FormeFilter.transform;
-	SetCube(false);
+	//on créé les cubes
+	CreateAllCubes();
+	SetCubes(false, AllCubes);
+	
 }
 
 function Update () {
+	GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer).enabled = false;
+	GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer).enabled = false;
 	CheckTriangle();
 	if (collision) {
 		UpdateMesh();
@@ -96,8 +102,11 @@ if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.RightControl)) {
 	// troisième paramètre : distance de la caméra 
 	// donc il faut placer le z par rapport à la caméra.
 	newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
-	cube.transform.position = newpoint;
-	SetCube(true);
+	cube1.transform.position = newpoint;
+	SetCubes(true, AllCubes);
+	SetCubes(true, cube1);
+	SetCubes(false, cube2);
+	SetCubes(false, cube3);
 	var oldMesh : Mesh = gameObject.Find("Forme").GetComponent(MeshFilter).mesh;
 	var meshVertices : Vector3[] = oldMesh.vertices;
 	meshVertices[index] = newpoint;
@@ -110,14 +119,36 @@ if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.RightControl)) {
 	}
 }
 
-function SetCube (b : boolean) {
+function SetCubes (b : boolean, cube : GameObject) {
 	cube.SetActive(b);
 }
 
-function CreateCube (cubename : String) {
-	cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+function CreateCube (cubename : String) : GameObject {
+	var cube : GameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	cube.name = cubename;
 	cube.transform.parent = AllCubes.transform;
 	cube.renderer.material.color = Color.red;
 	cube.transform.localScale = Vector3(0.1,0.1,0.1);
+	return cube;
+}
+
+function CreateAllCubes () {
+	if (GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube1") == null) {
+		cube1 = CreateCube("Cube1");
+	}
+	else {
+		cube1 = GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube1").gameObject;
+	}
+	if (GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube2") == null) {
+		cube2 = CreateCube("Cube2");
+	}
+	else {
+		cube2 = GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube2").gameObject;
+	}
+	if (GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube3") == null) {
+		cube3 = CreateCube("Cube3");
+	}
+	else {
+		cube3 = GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube3").gameObject;
+	}
 }

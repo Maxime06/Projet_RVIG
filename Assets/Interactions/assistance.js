@@ -32,27 +32,20 @@ function Start () {
 	meshVertices_assist = FormeFilter_assist.mesh.vertices;
 	
 	if (transform.Find("AllCubesHelp") == null) {
-		AllCubesHelp = new GameObject("AllCubesHelp");
+		AllCubesHelp = GameObject("AllCubesHelp");
 	}
-	
-	//on créé les 3 cubes
-	if (transform.Find("CubeHelp1")==null) {
-	cube1_assist = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		CreateCube("CubeHelp1", cube1_assist);
+	else {
+		AllCubesHelp = GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject;
 	}
-	if (transform.Find("CubeHelp2")==null) {
-		cube2_assist = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		CreateCube("CubeHelp2", cube2_assist);
-	}
-	if (transform.Find("CubeHelp3")==null) {
-		cube3_assist = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		CreateCube("CubeHelp3", cube3_assist);
-	}
-	
 	AllCubesHelp.transform.parent = FormeFilter_assist.transform;
-	SetCubes(false, cube1_assist);
+	//on créé les 3 cubes
+	CreateAllCubes_assist();
+	SetCubes(false, AllCubesHelp);
+	
+	/*SetCubes(false, cube1_assist);
 	SetCubes(false, cube2_assist);
-	SetCubes(false, cube3_assist);
+	SetCubes(false, cube3_assist);*/
+	
 	
 	lineRenderer_assist = GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.AddComponent(LineRenderer);
 	lineRenderer_assist.material = new Material (Shader.Find("Particles/Additive"));
@@ -103,7 +96,10 @@ function Update () {
 		index_assist[1] = 0;
 		index_assist[2] = 0;
 		cube1_assist.transform.position = closestpoint_assist;
+		//SetCubes(true, AllCubesHelp);
 		SetCubes(true, cube1_assist);
+		SetCubes(false, cube2_assist);
+		SetCubes(false, cube3_assist);
 	}
 	
 	//dans le cas d'une déformation d'une arrete
@@ -139,8 +135,10 @@ function Update () {
 		cube2_assist.transform.position = p2_assist[1];
 		lineRenderer_assist.SetPosition(0, cube1_assist.transform.position);
 		lineRenderer_assist.SetPosition(1, cube2_assist.transform.position);
+		//SetCubes(true, AllCubesHelp);
 		SetCubes(true, cube1_assist);
 		SetCubes(true, cube2_assist);
+		SetCubes(false, cube3_assist);
 		
 	}
 	//dans le cas d'une déformation d'une face
@@ -159,6 +157,7 @@ function Update () {
 		cube1_assist.transform.position = p_assist[0];
 		cube2_assist.transform.position = p_assist[1];
 		cube3_assist.transform.position = p_assist[2];
+		//SetCubes(true, AllCubesHelp);
 		SetCubes(true, cube1_assist);
 		SetCubes(true, cube2_assist);
 		SetCubes(true, cube3_assist);
@@ -173,10 +172,32 @@ function SetCubes (b : boolean, cube : GameObject) {
 }
 
 
-function CreateCube (cubename : String, cubevar : GameObject){
-	//cubevar = GameObject.CreatePrimitive(PrimitiveType.Cube);
-	cubevar.name = cubename;
-	cubevar.transform.parent = AllCubesHelp.transform;
-	cubevar.renderer.material.color = Color.grey;
-	cubevar.transform.localScale = Vector3(0.1,0.1,0.1);
+function CreateCube (cubename : String) : GameObject {
+	var cube : GameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	cube.name = cubename;
+	cube.transform.parent = AllCubesHelp.transform;
+	cube.renderer.material.color = Color.grey;
+	cube.transform.localScale = Vector3(0.1,0.1,0.1);
+	return cube;
+}
+
+function CreateAllCubes_assist () {
+	if (GameObject.Find("Forme").transform.Find("AllCubesHelp").transform.Find("CubeHelp1") == null) {
+		cube1_assist = CreateCube("CubeHelp1");
+	}
+	else {
+		cube1_assist = GameObject.Find("Forme").transform.Find("AllCubesHelp").transform.Find("CubeHelp1").gameObject;
+	}
+	if (GameObject.Find("Forme").transform.Find("AllCubesHelp").transform.Find("CubeHelp2") == null) {
+		cube2_assist = CreateCube("CubeHelp2");
+	}
+	else {
+		cube2_assist = GameObject.Find("Forme").transform.Find("AllCubesHelp").transform.Find("CubeHelp2").gameObject;
+	}
+	if (GameObject.Find("Forme").transform.Find("AllCubesHelp").transform.Find("CubeHelp3") == null) {
+		cube3_assist = CreateCube("CubeHelp3");
+	}
+	else {
+		cube3_assist = GameObject.Find("Forme").transform.Find("AllCubesHelp").transform.Find("CubeHelp3").gameObject;
+	}
 }

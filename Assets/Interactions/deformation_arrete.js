@@ -18,6 +18,7 @@ var newpoint1 : Vector3 = new Vector3(0,0,0);
 var newpoint2 : Vector3 = new Vector3(0,0,0);
 var cube1 : GameObject;
 var cube2 : GameObject;
+var cube3 : GameObject;
 var AllCubes : GameObject;
 var lineRenderer : LineRenderer;
 
@@ -33,33 +34,33 @@ function Start () {
 	if (transform.Find("AllCubes") == null) {
 		AllCubes = new GameObject("AllCubes");
 	}
+	else {
+		AllCubes = GameObject.Find("Forme").transform.Find("AllCubes").gameObject;
+	}
 	AllCubes.transform.parent = FormeFilter.transform;
-	
 	// on créé une ligne rouge attachée à AllCubes
-	lineRenderer = GameObject.Find("Forme").transform.Find("AllCubes").gameObject.AddComponent(LineRenderer);
-	lineRenderer.material = new Material (Shader.Find("Particles/Additive"));
-	lineRenderer.SetColors(Color.red, Color.red);
-	lineRenderer.SetWidth(0.1,0.1);
-	lineRenderer.SetVertexCount(2);
-	//on désactive la ligne
-	//(lineRenderer as MonoBehaviour).enabled = false;
-	
-	if (GameObject.Find("Cube1") == null) {
-		cube1 = CreateCube("Cube1");
+	if (GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer) == null) {
+		lineRenderer = GameObject.Find("Forme").transform.Find("AllCubes").gameObject.AddComponent(LineRenderer);
+		lineRenderer.material = new Material (Shader.Find("Particles/Additive"));
+		lineRenderer.SetColors(Color.red, Color.red);
+		lineRenderer.SetWidth(0.1,0.1);
+		lineRenderer.SetVertexCount(2);
 	}
-	//on créé un cube
-	if (GameObject.Find("Cube2") == null) {
-		cube2 = CreateCube("Cube2");
+	else {
+		lineRenderer = GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer);
 	}
 	
+	//on créé les cubes
+	CreateAllCubes();
 	
-	//on désactive AllCubes
-	SetCubes(false, AllCubes);	
+	//on désactive tous les cubes
+	SetCubes(false, AllCubes);
 	
-
 }
 
 function Update () {
+	GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer).enabled = true;
+	GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer).enabled = true;
 	CheckTriangle();
 	if (collision) {
 		UpdateMesh();
@@ -84,7 +85,7 @@ function CheckTriangle () {
 			hitPoint = hitinfo.point;
 			triIndex = hitinfo.triangleIndex;
 			// on désactive les cubes gris et la ligne grise quand on clique
-			GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(false);
+			SetCubes(false, GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject);
 			collision = true;
 		}
 		else {
@@ -137,7 +138,10 @@ function UpdateMesh () {
 		cube2.transform.position = newpoint2;
 		lineRenderer.SetPosition(0, cube1.transform.position);
 		lineRenderer.SetPosition(1, cube2.transform.position);
-		SetCubes(true, AllCubes);	
+		SetCubes(true, AllCubes);
+		SetCubes(true, cube1);
+		SetCubes(true, cube2);
+		SetCubes(false, cube3);
 		//update mesh
 		var oldMesh : Mesh = gameObject.Find("Forme").GetComponent(MeshFilter).mesh;
 		var meshVertices : Vector3[] = oldMesh.vertices;
@@ -164,4 +168,25 @@ function CreateCube (cubename : String) : GameObject {
 	cube.renderer.material.color = Color.red;
 	cube.transform.localScale = Vector3(0.1,0.1,0.1);
 	return cube;
+}
+
+function CreateAllCubes () {
+	if (GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube1") == null) {
+		cube1 = CreateCube("Cube1");
+	}
+	else {
+		cube1 = GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube1").gameObject;
+	}
+	if (GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube2") == null) {
+		cube2 = CreateCube("Cube2");
+	}
+	else {
+		cube2 = GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube2").gameObject;
+	}
+	if (GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube3") == null) {
+		cube3 = CreateCube("Cube3");
+	}
+	else {
+		cube3 = GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube3").gameObject;
+	}
 }
