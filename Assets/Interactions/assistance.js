@@ -70,7 +70,7 @@ function Update () {
 		triIndex_assist = hitinfo_assist.triangleIndex;
 	}
 	else {
-		Debug.Log("no collision");
+	//	Debug.Log("no collision");
 		SetCubes(false, AllCubesHelp);
 	}
 	 Debug.DrawRay (ray_assist.origin, ray_assist.direction*100, Color.red);

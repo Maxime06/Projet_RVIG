@@ -138,10 +138,6 @@ function OnValidate () {
 	OtherFace();
 }
 
-function OnApplicationQuit () {
-	Destroy(this);
-}
-
 function OtherFace () {
     var mesh = gameObject.Find("Forme").GetComponent(MeshFilter).sharedMesh;
 	var vertices = mesh.vertices;

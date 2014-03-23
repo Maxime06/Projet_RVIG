@@ -1,6 +1,5 @@
 ﻿#pragma strict
 
-//@MenuItem ("GameObject/Create Other/Parallelepipoid")                  		//add it to the menu
 var Sphere : GameObject;
 var parrallele : float = 100;
 var meridian : float = 100;
@@ -16,7 +15,7 @@ function Start () {
 }
 
 function ValidateData () {
-	// create Cylinder if don't exists
+	// create Sphere if don't exists
 	if(gameObject.Find("Forme") == null) {
 		Sphere = new GameObject ("Forme");
 		Sphere.transform.position = Vector3(0,0,0);
@@ -35,12 +34,26 @@ function ValidateData () {
     if(gameObject.Find("Forme").GetComponent(MeshCollider) == null) {
     	Sphere.AddComponent(MeshCollider);
     }
-    if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_arrete") == null) {
+   if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+		gameObject.Find("Forme").AddComponent("deformation");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_arrete") == null) {
 		gameObject.Find("Forme").AddComponent("deformation_arrete");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_face") == null) {
+		gameObject.Find("Forme").AddComponent("deformation_face");
 	}
 	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("inter") == null) {
 		gameObject.Find("Main Camera").AddComponent("inter");
 	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("choose_deformation") == null) {
+		gameObject.Find("Forme").AddComponent("choose_deformation");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("assistance") == null) {
+		gameObject.Find("Forme").AddComponent("assistance");
+	}
+    (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
+	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
 }
 
 function UpdateMesh () {
@@ -93,7 +106,7 @@ function UpdateMesh () {
         newMesh.RecalculateNormals();                               	//recalculate normals, bounds and optimize
         newMesh.RecalculateBounds();
         newMesh.Optimize();                             
-             
+          
     (Sphere.GetComponent(MeshFilter) as MeshFilter).mesh = newMesh;  	//assign the created mesh as the used mesh
  	  Sphere.GetComponent(MeshCollider).sharedMesh = newMesh; 
 }
@@ -101,11 +114,7 @@ function UpdateMesh () {
 // called when the script is loaded or a value is changed in the inspector
 function OnValidate () {
 	UpdateMesh ();
-	OtherFace();
-}
-
-function OnApplicationQuit () {
-	Destroy(this);
+ OtherFace();
 }
 
 function OtherFace () {
@@ -137,8 +146,8 @@ function OtherFace () {
 		// save the new reversed triangle
 		j = i+szT; 
 		newTris[j] = triangles[i]+szV;
-		newTris[j+2] = triangles[i+1]+szV;
-		newTris[j+1] = triangles[i+2]+szV;
+		newTris[j+1] = triangles[i+1]+szV;
+		newTris[j+2] = triangles[i+2]+szV;
 	}
 	mesh.vertices = newVerts;
 	mesh.uv = newUv;

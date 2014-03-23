@@ -1,5 +1,5 @@
 ﻿#pragma strict
-
+var speed : float = 0.01;
 var FormeFilter : MeshFilter;  
 var meshTriangles : int[];
 var meshVertices : Vector3[];
@@ -15,40 +15,49 @@ var p : Vector3[] = new Vector3[3];
 var newpoint : Vector3 = new Vector3(0,0,0);
 var AllCubes : GameObject;
 var cube : GameObject;
+var bool :boolean = false;
+var mousepos : Vector2 = new Vector2(1,1);
+var size : Vector2;
+var sizex_default : float;
+var sizey_default : float;
+var oldMesh : Mesh;
 function Start () {
+	size = GetComponentInChildren(meshPlane).size;
+	oldMesh = GameObject.Find("Forme").GetComponent(MeshFilter).mesh;
+	sizex_default = size.x;
+	sizey_default = size.y;
 }
 
 function Update () {
-	if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetMouseButton(0)) {
-		var Plan = GameObject.Find("Main Camera").GetComponent("meshPlane");
-		print(Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")).x);
-		print(Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")).y);
-	}
-	//CheckTriangle();
-//	UpdateMesh();
 	
-}
-
-function CheckTriangle () {
-	// clique gauche
-	if (Input.GetMouseButtonDown(0)) {
-		// on créé un rayon 
-		ray = gameObject.Find("Main Camera").camera.ScreenPointToRay (Input.mousePosition);
-		
-		var distance : float = Mathf.Infinity; 
-		// si le rayon frappe un objet
-		if (Physics.Raycast(ray, hitinfo, distance)){
-			// get the hit point
-			hitPoint = hitinfo.point;
-			triIndex = hitinfo.triangleIndex;
+	if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetMouseButton(0)) {
+		if (!bool) {
+			print("coucou");
+			mousepos = Input.mousePosition;
+			bool = true;
 		}
 		else {
-			Debug.Log("no collision");
+			var mouse : Vector2 = new Vector2(mousepos.x - Input.mousePosition.x, mousepos.y - Input.mousePosition.y);
+			size.x = sizex_default + mouse.x*speed;
+			size.y = sizey_default + mouse.y*speed;
 		}
+		GetComponentInChildren(meshPlane).size = size;
+		// on créé le nouveau mesh à la bonne taille
+		GetComponentInChildren(meshPlane).UpdateMesh();
+		// on modifie la position des sommets de l'ancien (qui contient les précéentes déformations)
+		var meshVertices : Vector3[] = oldMesh.vertices;
+		for (var i : int = 0; i < meshVertices.Length; i++) {
+			meshVertices[i].x = meshVertices[i].x*size.x;
+			meshVertices[i].y = meshVertices[i].y*size.y;
+		}
+		oldMesh.vertices = meshVertices;
+			
 	}
-	if (Input.GetMouseButton(0)) Debug.DrawRay (ray.origin, ray.direction*100, Color.yellow);
-}
-
+	if(Input.GetKeyUp(KeyCode.RightControl) || Input.GetKeyUp(KeyCode.LeftControl)) {
+		mousepos = Vector2(0,0);
+	}
+	
+}/*
 function UpdateMesh () {
 if (Input.GetMouseButton(0)) {
 	// tableau des trois points du triangle heurté.
@@ -90,4 +99,4 @@ if (Input.GetMouseButton(0)) {
 
 function SetCube (b : boolean) {
 	cube.SetActive(b);
-}
+}*/

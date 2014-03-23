@@ -2,7 +2,7 @@
 
 var Plan : GameObject;
 var center : boolean = true;
-public static var size : Vector2 = new Vector2 (10, 10);
+var size : Vector2 = new Vector2 (10, 10);
 var resolutionX : int = 10;
 var resolutionZ : int = 10;
 private var newVertices : Vector3[] = new Vector3[(resolutionX + 1) * (resolutionZ + 1)];
@@ -55,7 +55,7 @@ function ValidateData () {
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("assistance") == null) {
 		gameObject.Find("Forme").AddComponent("assistance");
 	}
-    (gameObject.Find("Forme").GetComponent("deformation") as MonoBehaviour).enabled = false;
+    (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
 	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
     
 	// la limite peut être abaissée mais il faut éviter une taille nulle car le mesh deviendra invisible

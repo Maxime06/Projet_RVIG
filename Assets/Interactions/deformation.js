@@ -39,8 +39,12 @@ function Start () {
 }
 
 function Update () {
-	GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer).enabled = false;
-	GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer).enabled = false;
+	if (GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer) != null) {
+		GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer).enabled = false;
+	}
+	if (GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer) != null) {
+		GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer).enabled = false;
+	}
 	CheckTriangle();
 	if (collision) {
 		UpdateMesh();
@@ -65,12 +69,13 @@ function CheckTriangle () {
 			// get the hit point
 			hitPoint = hitinfo.point;
 			triIndex = hitinfo.triangleIndex;
+			print(triIndex);
 			// on désactive le cube gris quand on clique
 			GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(false);
 			collision = true;
 		}
 		else {
-			Debug.Log("no collision");
+			//Debug.Log("no collision");
 			collision = false;
 		}
 	}
@@ -102,6 +107,7 @@ if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.RightControl)) {
 	// troisième paramètre : distance de la caméra 
 	// donc il faut placer le z par rapport à la caméra.
 	newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
+	//newpoint.z += Input.GetAxis("Mouse ScrollWheel");
 	cube1.transform.position = newpoint;
 	SetCubes(true, AllCubes);
 	SetCubes(true, cube1);

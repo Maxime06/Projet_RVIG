@@ -59,8 +59,12 @@ function Start () {
 }
 
 function Update () {
-	GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer).enabled = true;
-	GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer).enabled = true;
+	if (GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer) != null) {
+		GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer).enabled = true;
+	}
+	if (GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer) != null) {
+		GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer).enabled = true;
+	}
 	CheckTriangle();
 	if (collision) {
 		UpdateMesh();
