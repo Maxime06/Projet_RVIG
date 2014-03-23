@@ -71,12 +71,14 @@ function Update () {
 	var distance : float = Mathf.Infinity; 
 	// si le rayon frappe un objet
 	if (Physics.Raycast(ray_assist, hitinfo_assist, distance) && !Input.GetMouseButton(0)) {
+		SetCubes(true, AllCubesHelp);
 		// get the hit point
 		hitPoint_assist = hitinfo_assist.point;
 		triIndex_assist = hitinfo_assist.triangleIndex;
 	}
 	else {
 		Debug.Log("no collision");
+		SetCubes(false, AllCubesHelp);
 	}
 	 Debug.DrawRay (ray_assist.origin, ray_assist.direction*100, Color.red);
 

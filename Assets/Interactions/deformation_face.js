@@ -113,12 +113,14 @@ function UpdateMesh () {
 		// troisième paramètre : distance de la caméra 
 		// donc il faut placer le z par rapport à la caméra.
 		var distx12 : float = (newpoint2 - newpoint1).x; 
+		var disty12 : float = (newpoint2 - newpoint1).y;
 		var distz12 : float = (newpoint2 - newpoint1).z;
 		var distx13 : float = (newpoint3 - newpoint1).x; 
+		var disty13 : float = (newpoint3 - newpoint1).y; 
 		var distz13 : float = (newpoint3 - newpoint1).z;
 		newpoint1 = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
-		newpoint2 = new Vector3(newpoint1.x+distx12, newpoint1.y, newpoint1.z+distz12);
-		newpoint3 = new Vector3(newpoint1.x+distx13, newpoint1.y, newpoint1.z+distz13);
+		newpoint2 = new Vector3(newpoint1.x+distx12, newpoint1.y+disty12, newpoint1.z+distz12);
+		newpoint3 = new Vector3(newpoint1.x+distx13, newpoint1.y+disty13, newpoint1.z+distz13);
 		cube1.transform.position = newpoint1;
 		cube2.transform.position = newpoint2;
 		cube3.transform.position = newpoint3;
@@ -140,7 +142,7 @@ function UpdateMesh () {
 		meshVertices[index[1]+(meshVertices.Length/2)] = newpoint2;
 		meshVertices[index[2]+(meshVertices.Length/2)] = newpoint3;
 		oldMesh.vertices = meshVertices;
-		oldMesh.colors = colors;
+		//oldMesh.colors = colors;
 		oldMesh.RecalculateNormals();                               
 		oldMesh.RecalculateBounds();
 		oldMesh.Optimize();

@@ -1,8 +1,8 @@
 ﻿#pragma strict
 
 var Cylinder : GameObject;
-var radius : float = 5f;
-var height : float = 8f;
+var radius : float = 1f;
+var height : float = 4f;
 var nbPoints : int = 8;
 private var newVertices : Vector3[] = new Vector3[2*nbPoints+2];
 private var newTriangles : int[] = new int[3*4*nbPoints];
@@ -51,8 +51,8 @@ function ValidateData () {
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("assistance") == null) {
 		gameObject.Find("Forme").AddComponent("assistance");
 	}
-    (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
-	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
+    (gameObject.Find("Forme").GetComponent("deformation") as MonoBehaviour).enabled = false;
+	(gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
 }
     
 function UpdateMesh () {

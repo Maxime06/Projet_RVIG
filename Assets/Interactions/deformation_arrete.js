@@ -129,9 +129,10 @@ function UpdateMesh () {
 		// troisième paramètre : distance de la caméra 
 		// donc il faut placer le z par rapport à la caméra.
 		var distx : float = (newpoint1 - newpoint2).x; 
+		var disty : float = (newpoint1 - newpoint2).y; 
 		var distz : float = (newpoint1 - newpoint2).z; 
 		newpoint1 = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
-		newpoint2 = new Vector3(newpoint1.x+distx, newpoint1.y, newpoint1.z+distz);
+		newpoint2 = new Vector3(newpoint1.x+distx, newpoint1.y+disty, newpoint1.z+distz);
 		cube1.transform.position = newpoint1;
 		cube2.transform.position = newpoint2;
 		lineRenderer.SetPosition(0, cube1.transform.position);
