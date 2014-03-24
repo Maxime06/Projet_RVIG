@@ -31,24 +31,12 @@ var triIndex : int;
 var closestpoint : Vector3 = new Vector3(0,0,0);
 var newpoint : Vector3 = new Vector3(0,0,0);
 
-var speed : float = 0.01;
-var FormeFilter : MeshFilter;  
+var profondeur : float = 2.5;
 var min : float;
 var index : int;
 var distance : float = Mathf.Infinity; 
 
 var p : Vector3[] = new Vector3[3];
-var AllCubes : GameObject;
-var cube : GameObject;
-var bool :boolean = false;
-var mousepos : Vector2 = new Vector2(1,1);
-
-
-var mouse : Vector2;
-
-var cube1 : GameObject;
-var cube2 : GameObject;
-var cube3 : GameObject;
 
 // on récupère les variables que l'on va modifier
 /* 
@@ -117,14 +105,11 @@ function Update () {
 					}
 			}
 		}
-	
-		//on affecte à newpoint le closest point
-		newpoint = closestpoint;
 		var cam = gameObject.Find("Main Camera").camera;
 		// troisième paramètre : distance de la caméra 
 		// donc il faut placer le z par rapport à la caméra.
 		newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
-		
+		var scroll : float = Input.GetAxis("Mouse ScrollWheel");
 		//le plan
 		if (GameObject.Find("Main Camera").GetComponent("meshPlane") != null) {
 			size.x = sizex_default + Mathf.Clamp(newpoint.x - closestpoint.x, -sizex_default+0.1, 50);
@@ -134,7 +119,7 @@ function Update () {
 			GetComponentInChildren(meshPlane).UpdateMesh();
 			GetComponentInChildren(meshPlane).OtherFace();
 		}
-		
+		// le cylindre
 		if  (GameObject.Find("Main Camera").GetComponent("meshCylinder") != null) {
 			var nbPoints = GetComponentInChildren(meshCylinder).nbPoints;
 			if (index != 2*nbPoints && index != 2*nbPoints+1) {
@@ -146,6 +131,16 @@ function Update () {
 			// on créé le nouveau mesh à la bonne taille
 			GetComponentInChildren(meshCylinder).UpdateMesh();
 			GetComponentInChildren(meshCylinder).OtherFace();
+		}
+		// le parallélépipède
+		if  (GameObject.Find("Main Camera").GetComponent("meshParallelepipoid") != null) {
+			GetComponentInChildren(meshParallelepipoid).height = par_height + Mathf.Clamp(newpoint.y - closestpoint.y, -par_length+0.1, 50);
+			GetComponentInChildren(meshParallelepipoid).length = GetComponentInChildren(meshParallelepipoid).length + Mathf.Clamp(scroll*profondeur, -par_length+0.1, 50);
+			GetComponentInChildren(meshParallelepipoid).width = par_width + Mathf.Clamp(newpoint.x - closestpoint.x, -par_width+0.1, 50);
+			// on créé le nouveau mesh à la bonne taille
+			GetComponentInChildren(meshParallelepipoid).UpdateMesh();
+			GetComponentInChildren(meshParallelepipoid).OtherFace();
+		
 		}
 	}
 	

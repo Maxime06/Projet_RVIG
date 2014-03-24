@@ -79,7 +79,7 @@ function Update () {
 
 function CheckTriangle () {
 	// clique gauche
-	if (Input.GetMouseButtonDown(0)) {
+	if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftControl)) {
 		// on créé un rayon 
 		ray = gameObject.Find("Main Camera").camera.ScreenPointToRay (Input.mousePosition);
 		
