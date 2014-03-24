@@ -83,9 +83,12 @@ Projet de Réalité Virtuelle}\\[0.4cm]
 
 \section{Le sujet}
 
-Le but de ce projet était de prendre en main le logiciel Unity pour créer un éditeur de forme géométriques en trois dimensions. Les quatre formes possible sont le plan, le parallélépipède, le cylindre et la sphère. Nous avons rajouté le double cône.
+Le but de ce projet était de prendre en main le logiciel Unity pour créer un éditeur de forme géométriques en trois dimensions. Les quatre formes possible sont le plan, le parallélépipède, le cylindre et la sphère.\\
 L'édition des formes géométriques se fait selon trois déformations. La déformation d'un sommet du Mesh, d'une arrête ou d'un face c'est à dire d'un triangle du Mesh.
-\\Nous avons également mis en place une assistance à la sélection. Lorsque l'utilisateur déplace sa souris sur la figure géométrique, des cubes gris se positionnent sur les sommets qui seront déplacés. L'utilisateur peut également déplacer la caméra autour de l'objet pour mieux visualiser les déformations.
+\\Nous avons également mis en place une assistance à la sélection. Lorsque l'utilisateur déplace sa souris sur la figure géométrique, des cubes gris se positionnent sur les sommets qui seront déplacés. L'utilisateur peut également déplacer la caméra autour de l'objet pour mieux visualiser les déformations.\\
+
+La première étape de ce projet a été la création des Mesh. Il a fallut créer pour chaque figure un mesh adapté.
+Par la suite, nous avons développé les scripts de déformations en commençant par la déformation d'un sommet. Nous avons ensuite adapté ce code à la déformation d'une arête puis d'une face. Pour terminer nous avons créé le menu et rajouté les différentes assistances.
 
 
 
@@ -93,12 +96,13 @@ L'édition des formes géométriques se fait selon trois déformations. La défo
 
 \subsection{Les déformations}
 
-Nous avons choisi de créer un script par type de déformation. En effet, il nous a paru plus simple dans un premier temps de séparer les fonctions. Si nous avions eu un peu plus de temps, nous aurions pu regrouper les  trois déformations en un seul script.
+Nous avons choisi de créer un script par type de déformation. En effet, il nous a paru plus simple dans un premier temps de séparer les fonctions. C'est également plus simple lors de la sélection de la déformation. Si nous avions eu un peu plus de temps, nous aurions pu regrouper les trois déformations en un seul script afin de factoriser du code et de le rendre plus efficace.
+Pour déformer un sommet, nous avons choisit d'utiliser un Physics.RayCast c'est à dire un rayon reliant le centre de la caméra au point 3D correspondant à la position de la souris. C'est grâce à ce rayon que nous avons pu récupérer les informations nécessaire à la mise à jour du Mesh. Une fois les nouvelles coordonnées du ou des points mise à jour, il fallait mettre à jour le mesh. Pour cela, nous avons mis à jour le tableau de vertices du mesh puis nous lui avons réaffecté son tableau de triangles et d'uvs. 
 
 \subsection{L'assistance}
 
-Nous avons décidé d'assister l'utilisateur dans la manipulation des primitives à l'aide de cubes. En effet, lorsque l'utilisateur passe la souris sur une forme, il ne sait pas quel sommet, arrête ou face il va déformer. C'est pourquoi nous avons décider d'afficher sur le ou les sommets qui seront déplacé un cube de couleur grise. Lorsque l'utilisateur confirmera la sélection de ce ou ces sommets à l'aide du clique gauche de la souris, les cubes gris passeront au rouge pour indiquer à l'utilisateur qu'il a validé la sélection.\\
-Nous avons rajouté une ligne tracée entre les deux sommets lors d'une déformation par arrête. Cette ligne devient rouge lorsque l'utilisateur a validé le choix de l'arrête à déformer.
+Nous avons décidé d'assister l'utilisateur dans la manipulation des primitives à l'aide de cubes et de coloration des arrêtes. En effet, lorsque l'utilisateur passe la souris sur une forme, il ne sait pas quel sommet, arrête ou face il va déformer.\\ C'est pourquoi nous avons décider d'afficher sur le ou les sommets qui seront déplacés un cube de couleur grises. Lorsque l'utilisateur confirmera la sélection de ce ou ces sommets à l'aide du clique gauche de la souris, les cubes gris passeront au rouge pour indiquer à l'utilisateur qu'il a validé la sélection.\\
+Nous avons rajouté une ligne tracée entre les deux sommets lors d'une déformation par arrête ainsi que trois arêtes lors de la déformation par face. Ces lignes deviennent rouge lorsque l'utilisateur a validé le choix de l'arrête ou de la face à déformer.
 
 
 
@@ -107,13 +111,13 @@ Nous avons rajouté une ligne tracée entre les deux sommets lors d'une déforma
 Lors de ce projet, nous avons rencontré quelques problèmes. Certains nous ont pris plus de temps que d'autres. Voici les principaux problèmes auxquels nous avons été confronté.
 
 \subsection{La sélection des différentes déformations et l'assistance utilisateur}
-Nous avons créé un script par déformation c'est à dire un script pour la déformation d'un sommet, un pour la déformation par arrête et un dernier pour la déformation par face. Ces trois scripts sont attaché à la figure nommée "Forme". Il fallait donc activer ou désactiver les scripts désirés ainsi qu'initialiser les cubes d'assistance et de validation lors du changement de script.
-\\ En effet, lors d'une déformation par sommet, un seul cube d'assistance et un seul cube de validation sont nécessaire alors que lors d'une déformation par face, il est nécessaire d'utiliser  trois cubes pour l'assistance ainsi que trois cubes pour la validation. Nous avons donc créé les six cubes ( trois de validation et trois d'assistance ) lors de la création de la forme géométrique. Nous avons ensuite activé ou désactiver ces cubes et ligne d'arête en fonction du script sélectionné.
+Nous avons créé un script par déformation c'est à dire un script pour la déformation d'un sommet, un pour la déformation par arrête et un dernier pour la déformation par face. Ces trois scripts sont attaché à la figure nommée "Forme". Il fallait donc activer ou désactiver les scripts désirés ainsi d'initialiser les cubes d'assistance et de validation lors du changement de script. Si ces cubes ne sont pas initialisés, le programme renvoi une erreur dans la console. De plus, tous les cubes n'ont pas besoin d'être initialisé à chaque déformation.
+\\ En effet, lors d'une déformation par sommet, un seul cube d'assistance et un seul cube de validation sont nécessaires alors que lors d'une déformation par face, il  faut utiliser  trois cubes pour l'assistance ainsi que trois cubes pour la validation. Nous avons donc créé les six cubes (trois de validation et trois d'assistance) lors de la création de la forme géométrique. Puis nous avons ensuite activé ou désactivé ces cubes et ligne d'arête en fonction du script sélectionné.
 
 \subsection{La mise à jour du MeshCollider}
 
-Un autre problème est survenu lorsque nous avons modifié le mesh lors de la déformation. Le MeshCollider associé ne se mettait pas à jour. Par conséquent, il était parfois possible de passer à travers la figure et de toucher un autre triangle que celui désiré.\\
-Après plusieurs recherche, nous avons compris qu'il fallait affecter au MeshCollider la valeur "null" puis ensuite lui affecter le nouveau mesh déformé.\\
+Un autre problème est survenu lorsque nous avons modifié le mesh lors de la déformation. Le MeshCollider associé ne se mettait pas à jour. Par conséquent, il était parfois possible de passer à travers la figure et de toucher un autre triangle que celui désiré. Le programme déformait correctement le Mesh mais considérait celui-ci comme encore plat lors que la sélection d'une nouvelle primitive.\\
+Après plusieurs recherches, nous avons compris qu'il fallait affecter au MeshCollider la valeur "null" puis ensuite lui affecter le nouveau mesh déformé.\\
 
 Ce problème était assez gênant car nous avions les cubes d'assistance qui se positionnaient sur le MeshCollider et non sur le Mesh. Ces cubes étaient donc parfois recouvert par la texture et invisibles pour l'utilisateur.
 
@@ -125,7 +129,7 @@ Maxime
 \section{Améliorations et ajouts}
 
 \subsection{Ajout d'une nouvelle figure}
-Nous avons ajouté une figure connue qui est le double cône. Elle est définie à l'aide d'un rayon et d'un nombre de parallèle et de méridien comme la sphère.
+Après avoir créé les Mesh demandé dans le sujet, nous avons décider d'ajouter une figure assez connue qui est le double cône. Elle est définie à l'aide d'un rayon et d'un nombre de parallèle et de méridien comme la sphère. Les équations permettant de placer les points dans l'espace pour cette figures sont assez similaires à celle de la sphère c'est pourquoi nous avons décidé de la rajouter à notre programme. 
 
 \subsection{Modification de la sélection de l'arrête}
 Jusqu'à présent, la sélection de l'arrête de faisait de la manière suivante : Lorsque le rayon fictif frappe le MeshCollider, nous récupérons l'indice du triangle frappé puis à partir de cet indice, nous récupérons l'indice des trois sommets qui forment ce triangle. Pour sélectionner l'arête, nous avons choisi de sélectionner l'arête composée des deux sommets les plus proches. 
