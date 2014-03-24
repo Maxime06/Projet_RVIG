@@ -23,7 +23,7 @@ var cube3_assist : GameObject;
 var AllCubesHelp : GameObject;
 var lineRenderer_assist : LineRenderer;
 
-function Start () {
+function Update () {
 	//on récupère l'objet possédant le maillage
 	FormeFilter_assist = gameObject.Find("Forme").GetComponent(MeshFilter); 
 	// on récupère les points qui composent le mesh
@@ -46,18 +46,17 @@ function Start () {
 	SetCubes(false, cube2_assist);
 	SetCubes(false, cube3_assist);*/
 	
-	
-	lineRenderer_assist = GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.AddComponent(LineRenderer);
+	if(GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.GetComponent(LineRenderer) == null) {
+		lineRenderer_assist = GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.AddComponent(LineRenderer);
+	} 
+	else {
+		lineRenderer_assist = GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.GetComponent(LineRenderer);
+	}
 	lineRenderer_assist.material = new Material (Shader.Find("Particles/Additive"));
 	lineRenderer_assist.SetColors(Color.grey, Color.grey);
 	lineRenderer_assist.SetWidth(0.1,0.1);
 	lineRenderer_assist.SetVertexCount(2);
 
-	
-}
-
-function Update () {
-	
 	// on créé un rayon 
 	ray_assist = gameObject.Find("Main Camera").camera.ScreenPointToRay (Input.mousePosition);
 	

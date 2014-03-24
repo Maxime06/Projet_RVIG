@@ -55,6 +55,12 @@ function ValidateData () {
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("assistance") == null) {
 		gameObject.Find("Forme").AddComponent("assistance");
 	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("PointInfo") == null) {
+		gameObject.Find("Forme").AddComponent("PointInfo");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("scale_deformation") == null) {
+		gameObject.Find("Forme").AddComponent("scale_deformation");
+	}
     (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
 	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
     
@@ -130,6 +136,7 @@ function UpdateMesh () {
     newMesh.Optimize(); 
     
     (Plan.GetComponent(MeshFilter) as MeshFilter).mesh = newMesh;  	//assign the created mesh as the used mesh 
+    Plan.GetComponent(MeshCollider).sharedMesh = null;
     Plan.GetComponent(MeshCollider).sharedMesh = newMesh; 
 }
 

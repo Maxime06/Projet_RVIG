@@ -51,6 +51,13 @@ function ValidateData () {
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("assistance") == null) {
 		gameObject.Find("Forme").AddComponent("assistance");
 	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("PointInfo") == null) {
+		gameObject.Find("Forme").AddComponent("PointInfo");
+	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("scale_deformation") == null) {
+		gameObject.Find("Forme").AddComponent("scale_deformation");
+	}
+	
     (gameObject.Find("Forme").GetComponent("deformation") as MonoBehaviour).enabled = false;
 	(gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
 }

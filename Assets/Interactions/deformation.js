@@ -39,6 +39,7 @@ function Start () {
 }
 
 function Update () {
+	//(GameObject.Find("Forme").GetComponent(MeshCollider) as MonoBehaviour).enabled = true;
 	if (GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer) != null) {
 		GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer).enabled = false;
 	}
@@ -121,7 +122,9 @@ if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.RightControl)) {
 	oldMesh.RecalculateNormals();                               
     oldMesh.RecalculateBounds();
     oldMesh.Optimize();
-    gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = oldMesh; 
+     gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = null;
+   gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = oldMesh; 
+	//(gameObject.Find("Forme").GetComponent(MeshCollider) as MonoBehaviour).enabled = false;
 	}
 }
 
