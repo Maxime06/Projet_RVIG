@@ -1,0 +1,135 @@
+\documentclass[a4paper,oneside,12pt,titlepage]{article}
+ 
+%%Partie variable en fonction de ce que vous voulez faire.
+ 
+\usepackage[francais]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{hyperref}
+\usepackage{pst-all}
+\usepackage{makeidx}
+\usepackage{epsfig}
+\usepackage{geometry}
+\usepackage{graphicx} % insertion images
+\usepackage{listings} % pour insérer du code
+\usepackage{color} % pour colorer le code
+\DeclareGraphicsExtensions{.jpg,.mps,.pdf,.png} % Formats d’images
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\geometry{rmargin=2.5cm, lmargin=2.5cm, hmargin=2cm, bmargin=2cm}
+
+%configuration de listings pour ajouter et colorer du code SQL
+%\lstset{
+%language=HTML,
+%backgroundcolor=\color{white},
+%basicstyle=\normalsize,
+%keywordstyle=\color{violet},
+%commentstyle=\color{red},
+%stringstyle=\color[RGB]{207,49,3},
+%identifierstyle=\color{black}
+%}
+ 
+\hypersetup{
+backref=true, %permet d'ajouter des liens dans...
+hyperindex=true, %ajoute des liens dans les index.
+colorlinks=true, %colorise les liens
+breaklinks=true, %permet le retour à la ligne dans les liens trop longs
+urlcolor= blue, %couleur des hyperliens
+linkcolor= blue, %couleur des liens internes
+bookmarks=true, %créé des signets pour Acrobat
+bookmarksopen=true, %si les signets Acrobat sont créés,
+%les afficher complètement.
+pdftitle={Communication}, %informations apparaissant dans
+pdfauthor={Groupe}, %dans les informations du document
+pdfsubject={Communication} %sous Acrobat.
+}
+ 
+ 
+ 
+\begin{document}
+\begin{titlepage}
+\begin{center}
+ 
+% Haut de page
+\includegraphics[scale=0.5]{./logo.png}\\[1cm]
+ 
+\textsc{\Large ENSIIE}\\[0.5cm]
+ 
+ 
+% Titre
+\HRule \\[0.4cm]
+{ \huge \bfseries
+Projet de Réalité Virtuelle}\\[0.4cm]
+ 
+\HRule \\[1.5cm]
+ 
+% Auteur
+\begin{center}
+\large Maxence Bobin
+\large Maxime Defaucheux
+\end{center}
+ 
+% Bas de page
+\vfill
+{\large \today}
+ 
+\end{center}
+\end{titlepage}
+
+\clearpage
+\tableofcontents
+\clearpage
+% Corps du rapport 
+
+\section{Le sujet}
+
+Le but de ce projet était de prendre en main le logiciel Unity pour créer un éditeur de forme géométriques en trois dimensions. Les quatre formes possible sont le plan, le parallélépipède, le cylindre et la sphère. Nous avons rajouté le double cône.
+L'édition des formes géométriques se fait selon trois déformations. La déformation d'un sommet du Mesh, d'une arrête ou d'un face c'est à dire d'un triangle du Mesh.
+\\Nous avons également mis en place une assistance à la sélection. Lorsque l'utilisateur déplace sa souris sur la figure géométrique, des cubes gris se positionnent sur les sommets qui seront déplacés. L'utilisateur peut également déplacer la caméra autour de l'objet pour mieux visualiser les déformations.
+
+
+
+\section{Nos choix}
+
+\subsection{Les déformations}
+
+Nous avons choisi de créer un script par type de déformation. En effet, il nous a paru plus simple dans un premier temps de séparer les fonctions. Si nous avions eu un peu plus de temps, nous aurions pu regrouper les  trois déformations en un seul script.
+
+\subsection{L'assistance}
+
+Nous avons décidé d'assister l'utilisateur dans la manipulation des primitives à l'aide de cubes. En effet, lorsque l'utilisateur passe la souris sur une forme, il ne sait pas quel sommet, arrête ou face il va déformer. C'est pourquoi nous avons décider d'afficher sur le ou les sommets qui seront déplacé un cube de couleur grise. Lorsque l'utilisateur confirmera la sélection de ce ou ces sommets à l'aide du clique gauche de la souris, les cubes gris passeront au rouge pour indiquer à l'utilisateur qu'il a validé la sélection.\\
+Nous avons rajouté une ligne tracée entre les deux sommets lors d'une déformation par arrête. Cette ligne devient rouge lorsque l'utilisateur a validé le choix de l'arrête à déformer.
+
+
+
+\section{Les problèmes rencontrés}
+
+Lors de ce projet, nous avons rencontré quelques problèmes. Certains nous ont pris plus de temps que d'autres. Voici les principaux problèmes auxquels nous avons été confronté.
+
+\subsection{La sélection des différentes déformations et l'assistance utilisateur}
+Nous avons créé un script par déformation c'est à dire un script pour la déformation d'un sommet, un pour la déformation par arrête et un dernier pour la déformation par face. Ces trois scripts sont attaché à la figure nommée "Forme". Il fallait donc activer ou désactiver les scripts désirés ainsi qu'initialiser les cubes d'assistance et de validation lors du changement de script.
+\\ En effet, lors d'une déformation par sommet, un seul cube d'assistance et un seul cube de validation sont nécessaire alors que lors d'une déformation par face, il est nécessaire d'utiliser  trois cubes pour l'assistance ainsi que trois cubes pour la validation. Nous avons donc créé les six cubes ( trois de validation et trois d'assistance ) lors de la création de la forme géométrique. Nous avons ensuite activé ou désactiver ces cubes et ligne d'arête en fonction du script sélectionné.
+
+\subsection{La mise à jour du MeshCollider}
+
+Un autre problème est survenu lorsque nous avons modifié le mesh lors de la déformation. Le MeshCollider associé ne se mettait pas à jour. Par conséquent, il était parfois possible de passer à travers la figure et de toucher un autre triangle que celui désiré.\\
+Après plusieurs recherche, nous avons compris qu'il fallait affecter au MeshCollider la valeur "null" puis ensuite lui affecter le nouveau mesh déformé.\\
+
+Ce problème était assez gênant car nous avions les cubes d'assistance qui se positionnaient sur le MeshCollider et non sur le Mesh. Ces cubes étaient donc parfois recouvert par la texture et invisibles pour l'utilisateur.
+
+
+\subsection{Le passage de variables d'un script à un autre}
+
+Maxime
+
+\section{Améliorations et ajouts}
+
+\subsection{Ajout d'une nouvelle figure}
+Nous avons ajouté une figure connue qui est le double cône. Elle est définie à l'aide d'un rayon et d'un nombre de parallèle et de méridien comme la sphère.
+
+\subsection{Modification de la sélection de l'arrête}
+Jusqu'à présent, la sélection de l'arrête de faisait de la manière suivante : Lorsque le rayon fictif frappe le MeshCollider, nous récupérons l'indice du triangle frappé puis à partir de cet indice, nous récupérons l'indice des trois sommets qui forment ce triangle. Pour sélectionner l'arête, nous avons choisi de sélectionner l'arête composée des deux sommets les plus proches. 
+\\Cependant, cette sélection comporte un gros inconvénient, il est impossible de sélectionner l'arête de l'hypoténuse du triangle. \\
+Nous avons donc modifié le code pour choisir l'arête dont le centre est le plus proche du point frappé.
+
+\end{document}
