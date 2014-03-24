@@ -8,6 +8,7 @@ var max_assist : float;
 var closestpoint_assist : Vector3 = new Vector3(0,0,0);
 var farestpoint_assist : Vector3 = new Vector3(0,0,0);
 var index_assist : int[] = new int[3];
+var index_mil_assist : int = 0;
 var i : int;
 var d : float;
 var point_assist : Vector3;
@@ -108,8 +109,26 @@ function Update () {
 			 meshVertices_assist[meshTriangles_assist[3*triIndex_assist+1]],
 			 meshVertices_assist[meshTriangles_assist[3*triIndex_assist+2]]
 			];
-			
-		//on calcule le point le plus proche et on le met dans closestpoint 
+						
+		// on créé trois points qui sont les milieux de chaque aretes
+		var milieux_assist : Vector3[] = new Vector3[3];
+		for (var i : int = 0; i < 3; i++) {
+			milieux_assist[i] = p_assist[i] - p_assist[(i+1)%3];
+		}
+		
+		// on sélectionne l'arrete dont lecentre est le plus proche de hitpoint
+		min_assist = Vector3.Distance(milieux_assist[0], hitPoint_assist);
+		for (i = 0; i < 3; i++) {
+			var point_mil_assist : Vector3 = milieux_assist[i];
+			d = Vector3.Distance(point_mil_assist, hitPoint_assist);
+				if (d <= min_assist) { 
+					min_assist = d;
+					index_mil_assist = i;
+				}
+		}
+		index_assist[0] = meshTriangles_assist[3*triIndex_assist + index_mil_assist];
+		index_assist[1] = meshTriangles_assist[3*triIndex_assist + (index_mil_assist+1)%3];		
+		/*//on calcule le point le plus proche et on le met dans closestpoint 
 		max_assist = Vector3.Distance(p_assist[0], hitPoint_assist);
 		for (i = 0; i < 3; i++) {
 			point_assist = p_assist[i];
@@ -127,11 +146,11 @@ function Update () {
 				index_assist[k] = meshTriangles_assist[3*triIndex_assist + i];
 				k++;
 			}
-		}
+		}*/
 		index_assist[2] = 0;
 		// on modifie le point closestpoint dans le mesh
-		cube1_assist.transform.position = p2_assist[0];
-		cube2_assist.transform.position = p2_assist[1];
+		cube1_assist.transform.position = p_assist[index_mil_assist];
+		cube2_assist.transform.position = p_assist[(index_mil_assist+1)%3];
 		lineRenderer_assist.SetPosition(0, cube1_assist.transform.position);
 		lineRenderer_assist.SetPosition(1, cube2_assist.transform.position);
 		//SetCubes(true, AllCubesHelp);

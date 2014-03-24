@@ -60,7 +60,7 @@ function Update () {
 
 function CheckTriangle () {
 	// clique gauche
-	if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.RightControl)) {
+	if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftControl)) {
 		// on créé un rayon 
 		ray = gameObject.Find("Main Camera").camera.ScreenPointToRay (Input.mousePosition);
 		
@@ -84,7 +84,7 @@ function CheckTriangle () {
 }
 
 function UpdateMesh () {
-if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.RightControl)) {
+if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl)) {
 	// tableau des trois points du triangle heurté.
 	p = [meshVertices[meshTriangles[3*triIndex]],
 		 meshVertices[meshTriangles[3*triIndex+1]],

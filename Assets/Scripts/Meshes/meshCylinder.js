@@ -54,8 +54,8 @@ function ValidateData () {
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("PointInfo") == null) {
 		gameObject.Find("Forme").AddComponent("PointInfo");
 	}
-	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("scale_deformation") == null) {
-		gameObject.Find("Forme").AddComponent("scale_deformation");
+	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("scale_deformation") == null) {
+		gameObject.Find("Main Camera").AddComponent("scale_deformation");
 	}
 	
     (gameObject.Find("Forme").GetComponent("deformation") as MonoBehaviour).enabled = false;
@@ -136,6 +136,7 @@ function UpdateMesh () {
         newMesh.Optimize();                             
              
     (Cylinder.GetComponent(MeshFilter) as MeshFilter).mesh = newMesh;  	//assign the created mesh as the used mesh
+ 	Cylinder.GetComponent(MeshCollider).sharedMesh = null;
  	Cylinder.GetComponent(MeshCollider).sharedMesh = newMesh;
 }
 

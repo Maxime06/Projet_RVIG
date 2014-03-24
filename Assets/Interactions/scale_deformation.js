@@ -1,92 +1,181 @@
 ﻿#pragma strict
-var speed : float = 0.01;
-var FormeFilter : MeshFilter;  
+
+// attributs du plan
+var size : Vector2;
+var sizex_default : float;
+var sizey_default : float;
+//attributs du cylindre : 
+var cyl_height : float;
+var cyl_radius : float;
+//attributs du para 
+var par_length : float;
+var par_height : float;
+var par_width : float;
+//attributs sphère
+var sph_radius : float;
+
+//les mesh
+var InitMesh : Mesh;
+var oldMesh : Mesh;
 var meshTriangles : int[];
 var meshVertices : Vector3[];
 var meshUvs : Vector2[];
-var min : float;
-var closestpoint : Vector3 = new Vector3(0,0,0);
-var index : int;
 
+//le rayon 
 var ray : Ray;
 var hitinfo : RaycastHit;
 var hitPoint : Vector3;
 var triIndex : int;
-var p : Vector3[] = new Vector3[3];
+
+// les points
+var closestpoint : Vector3 = new Vector3(0,0,0);
 var newpoint : Vector3 = new Vector3(0,0,0);
+
+var speed : float = 0.01;
+var FormeFilter : MeshFilter;  
+var min : float;
+var index : int;
+var distance : float = Mathf.Infinity; 
+
+var p : Vector3[] = new Vector3[3];
 var AllCubes : GameObject;
 var cube : GameObject;
 var bool :boolean = false;
 var mousepos : Vector2 = new Vector2(1,1);
-var size : Vector2;
-var sizex_default : float;
-var sizey_default : float;
-var oldMesh : Mesh;
+
+
 var mouse : Vector2;
-var InitMesh : Mesh;
+
+var cube1 : GameObject;
+var cube2 : GameObject;
+var cube3 : GameObject;
+
+// on récupère les variables que l'on va modifier
+/* 
+plan : size en x et y
+cylindre : height et radius
+parallélépipède : length, width, height
+sphère : radius
+*/
 function Start () {
-	size = GetComponentInChildren(meshPlane).size;
+	if (GameObject.Find("Main Camera").GetComponent("meshPlane") != null) {
+		size = GetComponentInChildren(meshPlane).size;
+		sizex_default = size.x;
+		sizey_default = size.y;
+	}
+	if (GameObject.Find("Main Camera").GetComponent("meshCylinder") != null) {
+		cyl_height = GetComponentInChildren(meshCylinder).height;
+		cyl_radius = GetComponentInChildren(meshCylinder).radius;
+	}
+	if (GameObject.Find("Main Camera").GetComponent("meshParallelepipoid") != null) {
+		par_height = GetComponentInChildren(meshParallelepipoid).height;
+		par_length = GetComponentInChildren(meshParallelepipoid).length;
+		par_width = GetComponentInChildren(meshParallelepipoid).width;
+	}
+	if (GameObject.Find("Main Camera").GetComponent("meshSphere") != null) {
+		sph_radius = GetComponentInChildren(meshSphere).radius;
+	}
+	// on récupère le Mesh initial
 	InitMesh = GameObject.Find("Forme").GetComponent(MeshFilter).mesh;
+	// on donne à old mesh ses valeurs
 	oldMesh = InitMesh;
 	meshTriangles = oldMesh.triangles;
 	meshVertices = oldMesh.vertices;
 	meshUvs = oldMesh.uv;
-	sizex_default = size.x;
-	sizey_default = size.y;
 }
 
 function Update () {
-	
-	if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetMouseButton(0)) {
-		if (!bool) {
-			print("coucou");
-			mousepos = Input.mousePosition;
-			bool = true;
-		}
-		else {
-			mouse = new Vector2(mousepos.x - Input.mousePosition.x, mousepos.y - Input.mousePosition.y);
-			size.x = sizex_default + mouse.x*speed;
-			size.y = sizey_default + mouse.y*speed;
-		}
-		// on sauvegarde le mesh deformé
-		oldMesh = GameObject.Find("Forme").GetComponent(MeshFilter).mesh;
-		// on met à jour la taille du mesh
-		GetComponentInChildren(meshPlane).size = size;
-		// on créé le nouveau mesh à la bonne taille
-		GetComponentInChildren(meshPlane).UpdateMesh();
-		GetComponentInChildren(meshPlane).OtherFace();
-		
-		// mise à jour des sommets déjà déplacé
-		
-		// on met à jour oldMesh avec le nouveau mesh créé
-		var updateMesh = GameObject.Find("Forme").GetComponent(MeshFilter).mesh;
-		// on modifie la position des sommets de l'ancien (qui contient les précédentes déformations)
-		//var newMesh : Mesh = new Mesh();
-		var newVertices : Vector3[] = new Vector3[updateMesh.vertices.length];
-		for (var i : int = 0; i < meshVertices.Length; i++) {
-			// le vecteur entre le point initial et le point déformé avant le scale
-			var DiffInitOld : Vector3 = InitMesh.vertices[i] - oldMesh.vertices[i];
-			var proportionX : float = sizex_default - size.x;
-			var proportionY : float = sizey_default - size.y;
 
-			newVertices[i].x = updateMesh.vertices[i].x + DiffInitOld.x*proportionX;
-			newVertices [i].y = updateMesh.vertices[i].y + DiffInitOld.y;
-			newVertices[i].z = updateMesh.vertices[i].z + DiffInitOld.z*proportionY;
+	if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetMouseButton(0)) {
+	
+		// on créé un rayon 
+		ray = gameObject.Find("Main Camera").camera.ScreenPointToRay (Input.mousePosition);
+		// si le rayon frappe un objet
+		if (Physics.Raycast(ray, hitinfo, distance)){
+			// get the hit point
+			hitPoint = hitinfo.point;
+			triIndex = hitinfo.triangleIndex;
 		}
-		oldMesh.Clear();
-		oldMesh.triangles = updateMesh.triangles;
-		oldMesh.vertices = newVertices;
-		oldMesh.uv = updateMesh.uv;
-		oldMesh.RecalculateNormals();                               
-	    oldMesh.RecalculateBounds();
-	    oldMesh.Optimize(); 
-	    GameObject.Find("Forme").GetComponent(MeshFilter).mesh = oldMesh; 
-	    GameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = null;
-    	GameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = oldMesh; 
+		if (Input.GetMouseButton(0)) Debug.DrawRay (ray.origin, ray.direction*100, Color.blue);
+	
+		// tableau des trois points du triangle heurté.
+		p = [meshVertices[meshTriangles[3*triIndex]],
+			 meshVertices[meshTriangles[3*triIndex+1]],
+			 meshVertices[meshTriangles[3*triIndex+2]]
+			];
+		
+		//on calcule le point le plus proche et on le met dans closestpoint 
+		if ((closestpoint.x == 0) && (closestpoint.y == 0) && (closestpoint.z == 0)) {
+			min = Vector3.Distance(p[0], hitPoint);
+			for (var i : int = 0; i < 3; i++) {
+				var point : Vector3 = p[i];
+				var d : float = Vector3.Distance(point, hitPoint);
+					if (d <= min) { 
+						min = d;
+						closestpoint = point;
+						index = meshTriangles[3*triIndex + i];
+					}
+			}
+		}
+	
+		//on affecte à newpoint le closest point
+		newpoint = closestpoint;
+		var cam = gameObject.Find("Main Camera").camera;
+		// troisième paramètre : distance de la caméra 
+		// donc il faut placer le z par rapport à la caméra.
+		newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
+		
+		//le plan
+		if (GameObject.Find("Main Camera").GetComponent("meshPlane") != null) {
+			size.x = sizex_default + Mathf.Clamp(newpoint.x - closestpoint.x, -sizex_default+0.1, 50);
+			size.y = sizey_default + Mathf.Clamp(newpoint.y - closestpoint.y, -sizey_default+0.1, 50);
+			GetComponentInChildren(meshPlane).size = size;
+			// on créé le nouveau mesh à la bonne taille
+			GetComponentInChildren(meshPlane).UpdateMesh();
+			GetComponentInChildren(meshPlane).OtherFace();
+		}
+		
+		if  (GameObject.Find("Main Camera").GetComponent("meshCylinder") != null) {
+			var nbPoints = GetComponentInChildren(meshCylinder).nbPoints;
+			if (index != 2*nbPoints && index != 2*nbPoints+1) {
+				GetComponentInChildren(meshCylinder).radius =  cyl_radius + Mathf.Clamp(newpoint.x - closestpoint.x, -cyl_radius+0.1, 50);
+			}
+			else {
+				GetComponentInChildren(meshCylinder).height = cyl_height + Mathf.Clamp(newpoint.x - closestpoint.x,-cyl_height+0.1, 50);
+			}
+			// on créé le nouveau mesh à la bonne taille
+			GetComponentInChildren(meshCylinder).UpdateMesh();
+			GetComponentInChildren(meshCylinder).OtherFace();
+		}
 	}
-	if(Input.GetKeyUp(KeyCode.RightControl) || Input.GetKeyUp(KeyCode.LeftControl)) {
-		mousepos = Vector2(0,0);
-		bool = false;
+	
+	//quand on lache on remet closestpoint à 0
+	if ((Input.GetKeyUp(KeyCode.RightControl) || Input.GetKeyUp(KeyCode.LeftControl)) || Input.GetMouseButtonUp(0)) {
+		closestpoint = Vector3(0,0,0);
+			if (GameObject.Find("Main Camera").GetComponent("meshPlane") != null) {
+		size = GetComponentInChildren(meshPlane).size;
+		sizex_default = size.x;
+		sizey_default = size.y;
+	}
+	if (GameObject.Find("Main Camera").GetComponent("meshCylinder") != null) {
+		cyl_height = GetComponentInChildren(meshCylinder).height;
+		cyl_radius = GetComponentInChildren(meshCylinder).radius;
+	}
+	if (GameObject.Find("Main Camera").GetComponent("meshParallelepipoid") != null) {
+		par_height = GetComponentInChildren(meshParallelepipoid).height;
+		par_length = GetComponentInChildren(meshParallelepipoid).length;
+		par_width = GetComponentInChildren(meshParallelepipoid).width;
+	}
+	if (GameObject.Find("Main Camera").GetComponent("meshSphere") != null) {
+		sph_radius = GetComponentInChildren(meshSphere).radius;
+	}
+	// on récupère le Mesh initial
+	InitMesh = GameObject.Find("Forme").GetComponent(MeshFilter).mesh;
+	// on donne à old mesh ses valeurs
+	oldMesh = InitMesh;
+	meshTriangles = oldMesh.triangles;
+	meshVertices = oldMesh.vertices;
+	meshUvs = oldMesh.uv;
 	}
 	
 }

@@ -9,6 +9,7 @@ var closestpoint1 : Vector3 = new Vector3(0,0,0);
 var closestpoint2 : Vector3 = new Vector3(0,0,0);
 var farestpoint : Vector3 = new Vector3(0,0,0);
 var index : int[] = new int[2];
+var index_mil : int = 0;
 var ray : Ray;
 var hitinfo : RaycastHit;
 var hitPoint : Vector3;
@@ -101,14 +102,37 @@ function CheckTriangle () {
 }
 
 function UpdateMesh () {
-	if (Input.GetMouseButton(0)) {
+	if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl)) {
 		// tableau des trois points du triangle heurté.
 		p = [meshVertices[meshTriangles[3*triIndex]],
 			 meshVertices[meshTriangles[3*triIndex+1]],
 			 meshVertices[meshTriangles[3*triIndex+2]]
 			];
-			
-		//on calcule le point le plus proche et on le met dans closestpoint 
+		
+		// on créé trois points qui sont les milieux de chaque aretes
+		var milieux : Vector3[] = new Vector3[3];
+		for (var i : int = 0; i < 3; i++) {
+			milieux[i] = p[i] - p[(i+1)%3];
+		}
+		
+		// on sélectionne l'arrete dont lecentre est le plus proche de hitpoint
+		var min : float = Vector3.Distance(milieux[0], hitPoint);
+		for (i = 0; i < 3; i++) {
+			var point_mil : Vector3 = milieux[i];
+			var d : float = Vector3.Distance(point_mil, hitPoint);
+				if (d <= min) { 
+					min = d;
+					index_mil = i;
+				}
+		}			
+		// on affecte à newpoint les nouveaux points
+		newpoint1 = p[index_mil];
+		newpoint2 = p[(index_mil+1)%3];
+		index[0] = meshTriangles[3*triIndex + index_mil];
+		index[1] = meshTriangles[3*triIndex + (index_mil+1)%3];
+		
+		
+		/*
 		max = Vector3.Distance(p[0], hitPoint);
 		for (var i : int = 0; i < 3; i++) {
 			var point : Vector3 = p[i];
@@ -129,7 +153,8 @@ function UpdateMesh () {
 		}
 		// on modifie le point closestpoint dans le mesh
 		newpoint1 = p2[0];
-		newpoint2 = p2[1];
+		newpoint2 = p2[1];*/
+		
 		var cam = gameObject.Find("Main Camera").camera;
 		// troisième paramètre : distance de la caméra 
 		// donc il faut placer le z par rapport à la caméra.

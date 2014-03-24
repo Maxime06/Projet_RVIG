@@ -111,6 +111,7 @@ function UpdateMesh () {
         newMesh.Optimize();                             
              
     (Parallelepipoid.GetComponent(MeshFilter) as MeshFilter).mesh = newMesh;  	//assign the created mesh as the used mesh
+	Parallelepipoid.GetComponent(MeshCollider).sharedMesh = null;
 	Parallelepipoid.GetComponent(MeshCollider).sharedMesh = newMesh;
 }
 
