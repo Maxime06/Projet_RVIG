@@ -21,7 +21,9 @@ var cube1 : GameObject;
 var cube2 : GameObject;
 var cube3 : GameObject;
 var AllCubes : GameObject;
-var colors : Color[];
+//var colors : Color[];
+var profondeur : float = 2.5;
+var decalage : float = 0;
 
 function Start () {
 	//on récupère l'objet possédant le maillage
@@ -65,6 +67,7 @@ function Update () {
 	if(Input.GetMouseButtonUp(0)) {
 		GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(true);
 		GameObject.Find("Forme").transform.Find("AllCubes").gameObject.SetActive(false);
+		decalage = 0;
 	}
 	
 }
@@ -118,9 +121,14 @@ function UpdateMesh () {
 		var distx13 : float = (newpoint3 - newpoint1).x; 
 		var disty13 : float = (newpoint3 - newpoint1).y; 
 		var distz13 : float = (newpoint3 - newpoint1).z;
-		newpoint1 = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
+		newpoint1 = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, decalage + Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
 		newpoint2 = new Vector3(newpoint1.x+distx12, newpoint1.y+disty12, newpoint1.z+distz12);
 		newpoint3 = new Vector3(newpoint1.x+distx13, newpoint1.y+disty13, newpoint1.z+distz13);
+		var scroll : float = Input.GetAxis("Mouse ScrollWheel");
+		decalage = decalage + scroll * profondeur;
+		newpoint1.z += scroll * profondeur;
+		newpoint2.z += scroll * profondeur;
+		newpoint3.z += scroll * profondeur;
 		cube1.transform.position = newpoint1;
 		cube2.transform.position = newpoint2;
 		cube3.transform.position = newpoint3;

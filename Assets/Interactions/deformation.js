@@ -6,7 +6,8 @@ var meshVertices : Vector3[];
 var min : float;
 var closestpoint : Vector3 = new Vector3(0,0,0);
 var index : int;
-
+var profondeur : float = 2.5;
+var decalage : float = 0;
 var ray : Ray;
 var hitinfo : RaycastHit;
 var hitPoint : Vector3;
@@ -54,6 +55,7 @@ function Update () {
 	if(Input.GetMouseButtonUp(0)) {
 		GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(true);
 		GameObject.Find("Forme").transform.Find("AllCubes").gameObject.SetActive(false);
+		decalage = 0;
 	}
 	
 }
@@ -102,13 +104,13 @@ if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl)) {
 				index = meshTriangles[3*triIndex + i];
 			}
 	}
-	// on modifie le point closestpoint dans le mesh
-	newpoint = closestpoint;
 	var cam = gameObject.Find("Main Camera").camera;
 	// troisième paramètre : distance de la caméra 
 	// donc il faut placer le z par rapport à la caméra.
-	newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
-	//newpoint.z += Input.GetAxis("Mouse ScrollWheel");
+	newpoint = cam.ScreenToWorldPoint(Vector3(Input.mousePosition.x, Input.mousePosition.y, decalage + Vector3.Dot((hitPoint-cam.transform.position),cam.transform.forward )));
+	var scroll : float = Input.GetAxis("Mouse ScrollWheel");
+	decalage = decalage + scroll * profondeur;
+	newpoint.z += scroll * profondeur;
 	cube1.transform.position = newpoint;
 	SetCubes(true, AllCubes);
 	SetCubes(true, cube1);
