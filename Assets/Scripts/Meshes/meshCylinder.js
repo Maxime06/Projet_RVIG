@@ -6,7 +6,7 @@ var height : float = 4f;
 var nbPoints : int = 8;
 private var newVertices : Vector3[] = new Vector3[2*nbPoints+2];
 private var newTriangles : int[] = new int[3*4*nbPoints];
-
+var center : boolean = true;
 function Start () {
 	if (PlayerPrefs.HasKey("cylinderRadius") && PlayerPrefs.HasKey("cylinderHeight")) {
 		radius = PlayerPrefs.GetFloat("cylinderRadius");
@@ -82,12 +82,20 @@ function UpdateMesh () {
  		var q : Vector3 = Vector3(radius*Mathf.Cos(theta),height,radius*Mathf.Sin(theta));
  		
  		newVertices[2*i] = p;
- 		uv[2*i] = Vector2(p.x, p.z);
  		newVertices[2*i+1] = q;
+ 		if (center) {
+				newVertices[2*i] -= Vector3 (0, height/2,0);
+				newVertices[2*i+1] -= Vector3 (0, height/2,0);
+		}
+ 		uv[2*i] = Vector2(p.x, p.z);
  		uv[2*i+1] = Vector2(p.x, p.z);
 	}
 	newVertices[2*nbPoints] = Vector3(0,0,0);
 	newVertices[2*nbPoints+1] = Vector3(0,height,0);
+	if (center) {
+				newVertices[2*nbPoints] -= Vector3 (0, height/2,0);
+				newVertices[2*nbPoints+1] -= Vector3 (0, height/2,0);
+	}
 	
 	// create newTriangles
 	for (var j : int = 0; j <= 2*(nbPoints-2); ) {

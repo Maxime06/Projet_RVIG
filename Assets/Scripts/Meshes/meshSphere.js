@@ -1,10 +1,10 @@
 ﻿#pragma strict
 
 var Sphere : GameObject;
-var parrallele : float = 100;
-var meridian : float = 100;
-private var newVertices : Vector3[] = new Vector3[(parrallele+1)*(meridian+1)];
-private var newTriangles : int[]  = new int[parrallele * meridian * 6];
+var parrallele : float = 20;
+var meridian : float = 20;
+private var newVertices : Vector3[] = new Vector3[parrallele*meridian+2];
+private var newTriangles : int[]  = new int[(parrallele+1) * meridian * 6];
 var radius : float = 5;
 
 function Start () {
@@ -69,8 +69,8 @@ function UpdateMesh () {
 	// check 
 	ValidateData();
 	// update size of newVertices and newTriangles
-	newVertices = new Vector3[(parrallele+1)*(meridian+1)];
-	newTriangles = new int[parrallele * meridian * 6];
+	newVertices = new Vector3[parrallele*meridian+2];
+	newTriangles = new int[(parrallele+1) * meridian * 6];
 	var uv : Vector2[] = new Vector2[newVertices.Length];
 	
 	// coord sphériques : 
@@ -78,11 +78,11 @@ function UpdateMesh () {
 	 rsinthethacos phi
 	 r sin phi
 	 */
-	 var k : int = 0;
-	 for (var i : int = 0; i <= parrallele; i++) {
-	 	for (var j : int = 0; j <= meridian; j++) {
-	 	var theta : float = (i/parrallele)*2*Mathf.PI;
-	 	var phi : float = (j/meridian)*2*Mathf.PI;
+	 var k : int = 1;
+	 for (var i : int = 0; i < parrallele; i++) {
+	 	for (var j : int = 0; j < meridian; j++) {
+	 	var phi : float = (i/parrallele)*Mathf.PI;
+	 	var theta : float = (j/meridian)*2*Mathf.PI;
 	 	var c1 : float = radius * Mathf.Cos(theta) * Mathf.Cos(phi);
 	 	var c2 : float = radius * Mathf.Sin(theta) * Mathf.Cos(phi);
 	 	var c3 : float = radius * Mathf.Sin(phi);
@@ -91,8 +91,12 @@ function UpdateMesh () {
 	 	k++;
 	 	}
 	 }
+	 newVertices[0] = Vector3(radius, 0,0);
+	 uv[0] = Vector2(radius, 0);
+	 newVertices[k+1] = Vector3(-radius,0,0);
+	 uv[k+1] = Vector2(-radius, 0);
 
-	k = 0;
+	k = 3*meridian;
 	for (i = 0; i < parrallele; i++) {
 		for (j = 0; j < meridian; j++) {
 			newTriangles[k + 5] =
@@ -103,6 +107,20 @@ function UpdateMesh () {
 			newTriangles[k + 4] = i * (meridian + 1) + j + 1;
 			k += 6;
 		}
+	}
+	
+	for (k = 0; k < meridian; k++) {
+			newTriangles[k] = 0;
+			newTriangles[k+1] = k+1;
+			newTriangles[k+2] = (k+2)%meridian;
+	}
+	
+	// les triangles du dernier sommet !!!!
+	var r : int = 3*parrallele * meridian;
+	for (k = r; k < r + meridian; k++) {
+			newTriangles[k] = parrallele*meridian;
+			newTriangles[k+1] = (parrallele-1)*meridian;
+			newTriangles[k+2] = ((parrallele-1)*meridian+1)%meridian;
 	}
  
    //create a new mesh, assign the vertices and triangles

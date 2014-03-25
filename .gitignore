@@ -38,3 +38,26 @@ Thumbs.db
 *.pdf
 *.gz
 *.toc
+*.assets
+test_Data/level1
+test_Data/Resources/unity default resources
+*.exe
+*.dll
+*.aspx
+*.config
+test_Data/Mono/etc/mono/config
+*.ini
+*.browser
+*.map
+*.xml
+*.txt
+test_Data/level7
+test_Data/level6
+test_Data/level4
+test_Data/level3
+test_Data/level5
+test_Data/mainData
+test_Data/level2
+test_Data/level0
+test_Data/Resources/unity_builtin_extra
+test_Data/PlayerConnectionConfigFile
