@@ -58,6 +58,9 @@ function ValidateData () {
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("scale_deformation") == null) {
 		gameObject.Find("Forme").AddComponent("scale_deformation");
 	}
+	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("menuGoBack") == null) {
+		gameObject.Find("Main Camera").AddComponent("menuGoBack");
+	}
     (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
 	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
 }
