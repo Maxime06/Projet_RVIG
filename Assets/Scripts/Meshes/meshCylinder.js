@@ -1,8 +1,8 @@
 ﻿#pragma strict
 
 var Cylinder : GameObject;
-var radius : float = 1f;
-var height : float = 4f;
+var radius : float = 1;
+var height : float = 4;
 var nbPoints : int = 8;
 private var newVertices : Vector3[] = new Vector3[2*nbPoints+2];
 private var newTriangles : int[] = new int[3*4*nbPoints];

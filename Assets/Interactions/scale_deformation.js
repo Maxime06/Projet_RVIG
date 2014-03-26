@@ -36,6 +36,7 @@ var min : float;
 var index : int;
 var distance : float = Mathf.Infinity; 
 
+var bool : boolean = false;
 var p : Vector3[] = new Vector3[3];
 
 // on récupère les variables que l'on va modifier
@@ -83,9 +84,10 @@ function Update () {
 			// get the hit point
 			hitPoint = hitinfo.point;
 			triIndex = hitinfo.triangleIndex;
+			bool = true;
 		}
 		if (Input.GetMouseButton(0)) Debug.DrawRay (ray.origin, ray.direction*100, Color.blue);
-	
+		if(bool) {
 		// tableau des trois points du triangle heurté.
 		p = [meshVertices[meshTriangles[3*triIndex]],
 			 meshVertices[meshTriangles[3*triIndex+1]],
@@ -122,12 +124,8 @@ function Update () {
 		// le cylindre
 		if  (GameObject.Find("Main Camera").GetComponent("meshCylinder") != null) {
 			var nbPoints = GetComponentInChildren(meshCylinder).nbPoints;
-			if (index != 2*nbPoints && index != 2*nbPoints+1) {
-				GetComponentInChildren(meshCylinder).radius =  cyl_radius + Mathf.Clamp(newpoint.x - closestpoint.x, -cyl_radius+0.1, 50);
-			}
-			else {
-				GetComponentInChildren(meshCylinder).height = cyl_height + Mathf.Clamp(newpoint.x - closestpoint.x,-cyl_height+0.1, 50);
-			}
+			GetComponentInChildren(meshCylinder).radius =  cyl_radius + Mathf.Clamp(newpoint.x - closestpoint.x, -cyl_radius+0.1, 50);
+			GetComponentInChildren(meshCylinder).height = GetComponentInChildren(meshCylinder).height + Mathf.Clamp(scroll*profondeur,-cyl_height+0.1, 50);
 			// on créé le nouveau mesh à la bonne taille
 			GetComponentInChildren(meshCylinder).UpdateMesh();
 			GetComponentInChildren(meshCylinder).OtherFace();
@@ -143,34 +141,35 @@ function Update () {
 		
 		}
 	}
-	
+	}
 	//quand on lache on remet closestpoint à 0
 	if ((Input.GetKeyUp(KeyCode.RightControl) || Input.GetKeyUp(KeyCode.LeftControl)) || Input.GetMouseButtonUp(0)) {
 		closestpoint = Vector3(0,0,0);
-			if (GameObject.Find("Main Camera").GetComponent("meshPlane") != null) {
-		size = GetComponentInChildren(meshPlane).size;
-		sizex_default = size.x;
-		sizey_default = size.y;
-	}
-	if (GameObject.Find("Main Camera").GetComponent("meshCylinder") != null) {
-		cyl_height = GetComponentInChildren(meshCylinder).height;
-		cyl_radius = GetComponentInChildren(meshCylinder).radius;
-	}
-	if (GameObject.Find("Main Camera").GetComponent("meshParallelepipoid") != null) {
-		par_height = GetComponentInChildren(meshParallelepipoid).height;
-		par_length = GetComponentInChildren(meshParallelepipoid).length;
-		par_width = GetComponentInChildren(meshParallelepipoid).width;
-	}
-	if (GameObject.Find("Main Camera").GetComponent("meshSphere") != null) {
-		sph_radius = GetComponentInChildren(meshSphere).radius;
-	}
-	// on récupère le Mesh initial
-	InitMesh = GameObject.Find("Forme").GetComponent(MeshFilter).mesh;
-	// on donne à old mesh ses valeurs
-	oldMesh = InitMesh;
-	meshTriangles = oldMesh.triangles;
-	meshVertices = oldMesh.vertices;
-	meshUvs = oldMesh.uv;
+		bool = false;
+		if (GameObject.Find("Main Camera").GetComponent("meshPlane") != null) {
+			size = GetComponentInChildren(meshPlane).size;
+			sizex_default = size.x;
+			sizey_default = size.y;
+		}
+		if (GameObject.Find("Main Camera").GetComponent("meshCylinder") != null) {
+			cyl_height = GetComponentInChildren(meshCylinder).height;
+			cyl_radius = GetComponentInChildren(meshCylinder).radius;
+		}
+		if (GameObject.Find("Main Camera").GetComponent("meshParallelepipoid") != null) {
+			par_height = GetComponentInChildren(meshParallelepipoid).height;
+			par_length = GetComponentInChildren(meshParallelepipoid).length;
+			par_width = GetComponentInChildren(meshParallelepipoid).width;
+		}
+		if (GameObject.Find("Main Camera").GetComponent("meshSphere") != null) {
+			sph_radius = GetComponentInChildren(meshSphere).radius;
+		}
+		// on récupère le Mesh initial
+		InitMesh = GameObject.Find("Forme").GetComponent(MeshFilter).mesh;
+		// on donne à old mesh ses valeurs
+		oldMesh = InitMesh;
+		meshTriangles = oldMesh.triangles;
+		meshVertices = oldMesh.vertices;
+		meshUvs = oldMesh.uv;
 	}
 	
 }

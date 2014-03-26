@@ -93,7 +93,7 @@ function Update () {
 				test.Translate(Vector3.back * speed * Time.deltaTime);
 				//print(test.position);
 				distance =  Vector3.Distance(test.transform.position, target.transform.position);
-				print(distance);
+				//print(distance);
 				if (distance < maxDistance) {
 					transform.Translate(speed * Time.deltaTime * Vector3.back);
 				}
@@ -103,7 +103,7 @@ function Update () {
 				test2.transform.Translate(Vector3.forward * speed * Time.deltaTime);
 				//print(test2.position);
 				distance =  Vector3.Distance(test2.transform.position, target.transform.position);
-			    print(distance);
+			    //print(distance);
 				if (distance > minDistance) {
 					transform.Translate(speed * Time.deltaTime * Vector3.forward);
 				}

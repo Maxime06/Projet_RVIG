@@ -191,6 +191,7 @@ function UpdateMesh () {
 		oldMesh.RecalculateNormals();                               
 		oldMesh.RecalculateBounds();
 		oldMesh.Optimize();
+		gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = null;
 		gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = oldMesh; 
 	}
 }
