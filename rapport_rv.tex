@@ -127,6 +127,10 @@ Ce problème était assez gênant car nous avions les cubes d'assistance qui se 
 
 Lors de la réalisation du menu graphique, nous avons rencontré le besoin de faire passer une variable depuis les scripts du menu vers un autre script utilisé dans une autre scène. Par exemple, lorsqu'on voulait réaliser une sphère, on se rendait dans la scène \textbf{menuSphere}, nous permettant de choisir le rayon. Or ce rayon devait être transmis à la scène \textbf{drawSphere}, et plus exactement au script \textbf{meshSphere} afin de bien prendre en compte la valeur choisie par l'utilisateur. Pour pallier ce problème, nous avons eu recours à l'outil \textbf{PlayerPrefs} pour stocker et récupérer des valeurs à travers différentes scènes.
 
+
+\subsection{Le zoom sur une primitive}
+Au départ, nous n'utilisions qu'un seul booléen pour savoir si la touche Z était pressée puis nous avions un Ray tracé depuis le centre de la caméra jusqu'au point 3D correspondant à la position de la souris dans l'espace. Ce rayon était mis à jour à chaque frame. Lorsque celui-ci frappait la figure, il choisissait le point le plus proche et centrait la caméra sur ce point. Le rayon n'était alors plus en contact avec la figure. Par conséquent, nous avions une caméra qui regardait sur une frame la primitive sélectionnée puis sur la frame suivante le centre de la figure et ainsi de suite. Cet effet était très désagréable malgré le fait que le zoom s'effectuait sur la primitive.\\ 
+Nous avons donc choisi d'utiliser deux booléens lors du zoom sur une primitive. L'un sert à savoir si la touche z a été pressée. Le second permet de savoir si une primitive a été verrouillée en tant que cible. Lorsque Z était désactivé, le verrouillage était lui aussi désactivé.
 \section{Améliorations et ajouts}
 
 \subsection{Ajout d'une nouvelle figure}

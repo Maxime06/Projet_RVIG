@@ -4,7 +4,7 @@ var Sphere : GameObject;
 var parrallele : float = 20;
 var meridian : float = 20;
 private var newVertices : Vector3[] = new Vector3[parrallele*meridian+2];
-private var newTriangles : int[]  = new int[(parrallele+1) * meridian * 6];
+private var newTriangles : int[]  = new int[(parrallele-1)* meridian * 6 + 2*meridian * 3];
 var radius : float = 5;
 
 function Start () {
@@ -34,7 +34,7 @@ function ValidateData () {
     if(gameObject.Find("Forme").GetComponent(MeshCollider) == null) {
     	Sphere.AddComponent(MeshCollider);
     }
-   if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+ /*  if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
 		gameObject.Find("Forme").AddComponent("deformation");
 	}
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_arrete") == null) {
@@ -62,7 +62,7 @@ function ValidateData () {
 		gameObject.Find("Main Camera").AddComponent("menuGoBack");
 	}
     (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
-	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
+	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;*/
 }
 
 function UpdateMesh () {
@@ -70,7 +70,7 @@ function UpdateMesh () {
 	ValidateData();
 	// update size of newVertices and newTriangles
 	newVertices = new Vector3[parrallele*meridian+2];
-	newTriangles = new int[(parrallele+1) * meridian * 6];
+	newTriangles = new int[(parrallele-1)* meridian * 6 + 2*meridian * 3];
 	var uv : Vector2[] = new Vector2[newVertices.Length];
 	
 	// coord sphériques : 
@@ -78,6 +78,8 @@ function UpdateMesh () {
 	 rsinthethacos phi
 	 r sin phi
 	 */
+	 newVertices[0] = Vector3(radius, 0,0);
+	 uv[0] = Vector2(radius, 0);
 	 var k : int = 1;
 	 for (var i : int = 0; i < parrallele; i++) {
 	 	for (var j : int = 0; j < meridian; j++) {
@@ -91,37 +93,46 @@ function UpdateMesh () {
 	 	k++;
 	 	}
 	 }
-	 newVertices[0] = Vector3(radius, 0,0);
-	 uv[0] = Vector2(radius, 0);
-	 newVertices[k+1] = Vector3(-radius,0,0);
-	 uv[k+1] = Vector2(-radius, 0);
+	 newVertices[parrallele*meridian+1] = Vector3(-radius,0,0);
+	 uv[parrallele*meridian+1] = Vector2(-radius, 0);
 
-	k = 3*meridian;
-	for (i = 0; i < parrallele; i++) {
-		for (j = 0; j < meridian; j++) {
-			newTriangles[k + 5] =
-			newTriangles[k    ] = i * (meridian + 1) + j;
-			newTriangles[k + 1] = (i + 1) * (meridian + 1) + j;
-			newTriangles[k + 2] =
-			newTriangles[k + 3] = (i + 1) * (meridian + 1) + j + 1;
-			newTriangles[k + 4] = i * (meridian + 1) + j + 1;
-			k += 6;
+	/* 0 -> 5 */
+	for (k = 0; k < meridian-1; k++) {
+			newTriangles[3*k] = 0;
+			newTriangles[3*k+1] = k+1;
+			newTriangles[3*k+2] = k+2;
+	}
+	/* 5 -> 8 */
+	k = meridian-1;
+	newTriangles[3*k] = 0;
+	newTriangles[3*k+1] = k+1;
+	newTriangles[3*k+2] = 1;
+	
+	for ( k = 0; k < meridian*parrallele;k++){
+		for (i = 0; i < parrallele; i++) {
+			for (j = 0; j < meridian; j++) {
+				newTriangles[3*meridian + k    ] = i * (meridian /*+ 1*/) + j + 1;
+				newTriangles[3*meridian + k + 1] = (i + 1) * (meridian/* + 1*/) + j +1;
+				newTriangles[3*meridian + k + 2] =  (i + 1) * (meridian/* + 1*/) + j + 2;
+				newTriangles[3*meridian + k + 3] = i * (meridian/* + 1*/) + j + 1;
+				newTriangles[3*meridian + k + 4] = (i + 1) * (meridian /*+ 1*/) + j + 2;
+				newTriangles[3*meridian + k + 5] = i * (meridian/* + 1*/) + j + 2;
+			}
 		}
 	}
 	
-	for (k = 0; k < meridian; k++) {
-			newTriangles[k] = 0;
-			newTriangles[k+1] = k+1;
-			newTriangles[k+2] = (k+2)%meridian;
-	}
-	
 	// les triangles du dernier sommet !!!!
-	var r : int = 3*parrallele * meridian;
-	for (k = r; k < r + meridian; k++) {
-			newTriangles[k] = parrallele*meridian;
-			newTriangles[k+1] = (parrallele-1)*meridian;
-			newTriangles[k+2] = ((parrallele-1)*meridian+1)%meridian;
+	var r : int = 6*(parrallele-1) * meridian;
+	for (k = 0; k < meridian-1;) {
+			newTriangles[r+k] = parrallele*meridian+1;
+			newTriangles[r+k+1] = meridian*(parrallele-1) +k+1;
+			newTriangles[r+k+2] = meridian*(parrallele-1) +k+2;
+			k+=3;
 	}
+	k = r+meridian;
+	newTriangles[k] = parrallele*meridian+1;
+	newTriangles[k+1] = meridian*(parrallele-1)+ meridian;
+	newTriangles[k+2] = meridian*(parrallele-1)+1;
  
    //create a new mesh, assign the vertices and triangles
     var newMesh : Mesh = new Mesh ();
