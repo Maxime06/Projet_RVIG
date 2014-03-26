@@ -100,6 +100,12 @@ Par la suite, nous avons développé les scripts de déformations en commençant
 Nous avons choisi de créer un script par type de déformation. En effet, il nous a paru plus simple dans un premier temps de séparer les fonctions. C'est également plus simple lors de la sélection de la déformation. Si nous avions eu un peu plus de temps, nous aurions pu regrouper les trois déformations en un seul script afin de factoriser du code et de le rendre plus efficace.
 Pour déformer un sommet, nous avons choisit d'utiliser un Physics.RayCast c'est à dire un rayon reliant le centre de la caméra au point 3D correspondant à la position de la souris. C'est grâce à ce rayon que nous avons pu récupérer les informations nécessaire à la mise à jour du Mesh. Une fois les nouvelles coordonnées du ou des points mise à jour, il fallait mettre à jour le mesh. Pour cela, nous avons mis à jour le tableau de vertices du mesh puis nous lui avons réaffecté son tableau de triangles et d'uvs. 
 
+\subsection{La déformation de l'échelle}
+
+La partie 2.5 du sujet n'étant pas très détaillée, nous avons pris plusieurs décisions qui nous semblaient judicieuses pour rendre l'utilisation du programme plus immersive et naturelle.\\
+Tout d'abord, la déformation du rayon du cylindre s'effectue en cliquant sur le bouton gauche de la souris ainsi qu'en maintenant la touche "CTRL" gauche. Nous avons choisi de modifier la hauteur du cylindre à l'aide de la molette de la souris.\\ 
+L'échelle du parallélépipède est déformable dans les trois dimensions. Nous avons donc choisi de déformer deux dimensions avec les deux axes de la souris puis la troisième (la profondeur) à l'aide de la molette.\\
+La modification de l'échelle du plan s'effectue en deux dimensions à l'aide de la souris de même que la sphère. 
 \subsection{L'assistance}
 
 Nous avons décidé d'assister l'utilisateur dans la manipulation des primitives à l'aide de cubes et de coloration des arrêtes. En effet, lorsque l'utilisateur passe la souris sur une forme, il ne sait pas quel sommet, arrête ou face il va déformer.\\ C'est pourquoi nous avons décider d'afficher sur le ou les sommets qui seront déplacés un cube de couleur grises. Lorsque l'utilisateur confirmera la sélection de ce ou ces sommets à l'aide du clique gauche de la souris, les cubes gris passeront au rouge pour indiquer à l'utilisateur qu'il a validé la sélection.\\
@@ -141,4 +147,8 @@ Jusqu'à présent, la sélection de l'arrête de faisait de la manière suivante
 \\Cependant, cette sélection comporte un gros inconvénient, il est impossible de sélectionner l'arête de l'hypoténuse du triangle. \\
 Nous avons donc modifié le code pour choisir l'arête dont le centre est le plus proche du point frappé.
 
+\subsection{Optimisation de l'algorithme Fil de fer}
+
+Le premier algorithme "Fil de fer" consistait à récupérer le Mesh puis pour chaque triangle tracer les trois arêtes correspondantes en créant un objet par arête comportant un composant "LineRenderer". Nous avons vite remarqué que cette utilisation était lourde et ralentissait énormément Unity notamment lors des déformations. \\
+Après réflexions, nous avons modifier l'algorithme pour qu'il stocke dans un tableau les couples de sommets composant une arête. Pour chaque triangle, il regarde si l'arête n'est pas déjà tracée c'est à dire si le couple de sommet la composant n'est pas présent dans le tableau. Si elle n'apparait pas, un nouvel objet avec un composant "LineRenderer" est ajouté sinon on passe à l'arête suivante. Cette technique a grandement optimisé les calculs fait par Unity ainsi que le nombre d'objets gérés. Nous pouvons désormais afficher le maillage tout en déformation le mesh.
 \end{document}
