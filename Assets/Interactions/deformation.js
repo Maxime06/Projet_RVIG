@@ -18,6 +18,7 @@ var cube1 : GameObject;
 var cube2 : GameObject;
 var cube3 : GameObject;
 var AllCubes : GameObject;
+private var old_bool_ff : boolean= false;
 function Start () {
 	//on récupère l'objet possédant le maillage
 	FormeFilter = gameObject.Find("Forme").GetComponent(MeshFilter); 
@@ -44,8 +45,10 @@ function Update () {
 	if (GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer) != null) {
 		GameObject.Find("Forme").transform.Find("AllCubes").GetComponent(LineRenderer).enabled = false;
 	}
-	if (GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer) != null) {
-		GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer).enabled = false;
+	if(GameObject.Find("Forme").transform.Find("AllCubesHelp") != null) {
+		if (GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer) != null) {
+			GameObject.Find("Forme").transform.Find("AllCubesHelp").GetComponent(LineRenderer).enabled = false;
+		}
 	}
 	CheckTriangle();
 	if (collision) {
@@ -63,6 +66,11 @@ function Update () {
 function CheckTriangle () {
 	// clique gauche
 	if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftControl)) {
+		old_bool_ff = GetComponentInChildren(fil_de_fer).bool;
+		if (old_bool_ff) {
+			Destroy(GameObject.Find("Forme").transform.Find("ff").gameObject);
+			GetComponentInChildren(fil_de_fer).bool = false;	
+		}
 		// on créé un rayon 
 		ray = gameObject.Find("Main Camera").camera.ScreenPointToRay (Input.mousePosition);
 		
@@ -72,7 +80,6 @@ function CheckTriangle () {
 			// get the hit point
 			hitPoint = hitinfo.point;
 			triIndex = hitinfo.triangleIndex;
-			print(triIndex);
 			// on désactive le cube gris quand on clique
 			GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(false);
 			collision = true;
@@ -124,12 +131,13 @@ if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl)) {
 	oldMesh.RecalculateNormals();                               
     oldMesh.RecalculateBounds();
     oldMesh.Optimize();
-     gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = null;
-   gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = oldMesh; 
-	//(gameObject.Find("Forme").GetComponent(MeshCollider) as MonoBehaviour).enabled = false;
-	}
+    gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = null;
+   	gameObject.Find("Forme").GetComponent(MeshCollider).sharedMesh = oldMesh; 
+   /*if (old_bool_ff) {
+   		GetComponentInChildren(fil_de_fer).bool = true;
+	}*/
 }
-
+}
 function SetCubes (b : boolean, cube : GameObject) {
 	cube.SetActive(b);
 }
@@ -163,3 +171,4 @@ function CreateAllCubes () {
 		cube3 = GameObject.Find("Forme").transform.Find("AllCubes").transform.Find("Cube3").gameObject;
 	}
 }
+

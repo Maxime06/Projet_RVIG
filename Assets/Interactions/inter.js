@@ -3,8 +3,8 @@
 var speed : float = 50.0;
 var rotationSpeed : float = 50.0;
 var target : Transform;
-var minDistance = 5; //Min distance of the camera from the target
-var maxDistance = 20;
+var minDistance : float = 5; //Min distance of the camera from the target
+var maxDistance : float = 20;
 var distance : float = 10.0;
 var ray : Ray;
 var hitinfo : RaycastHit;
@@ -89,23 +89,24 @@ function Update () {
 			else {*/
 				
 			if (Input.GetKey(KeyCode.M)) {
-			/*target.transform.Translate(Vector3.back * speed * Time.deltaTime);
-			distance =  Vector3.Distance(target.transform.position, camera.transform.position);
-			distance = Mathf.Clamp(distance, minDistance, maxDistance);
-			if (distance != maxDistance) {*/
-				transform.Translate(speed * Time.deltaTime * Vector3.back);
-			//}
+				var test : Transform = camera.transform;
+				test.Translate(Vector3.back * speed * Time.deltaTime);
+				//print(test.position);
+				distance =  Vector3.Distance(test.transform.position, target.transform.position);
+				print(distance);
+				if (distance < maxDistance) {
+					transform.Translate(speed * Time.deltaTime * Vector3.back);
+				}
 			}
 			if (Input.GetKey(KeyCode.P)) {
-			/*transform.Translate(Vector3.forward * speed * Time.deltaTime);
-			distance =  Vector3.Distance(target.transform.position, camera.transform.position);
-		    distance = Mathf.Clamp(distance, minDistance, maxDistance);*/
-			/*target.transform.Translate(Vector3.forward * speed * Time.deltaTime);
-			distance =  Vector3.Distance(target.transform.position, camera.transform.position);
-			distance = Mathf.Clamp(distance, minDistance, maxDistance);
-			if (distance != minDistance) {*/
-				transform.Translate(speed * Time.deltaTime * Vector3.forward);
-			//}
+				var test2 : Transform = camera.transform;
+				test2.transform.Translate(Vector3.forward * speed * Time.deltaTime);
+				//print(test2.position);
+				distance =  Vector3.Distance(test2.transform.position, target.transform.position);
+			    print(distance);
+				if (distance > minDistance) {
+					transform.Translate(speed * Time.deltaTime * Vector3.forward);
+				}
 			}
 		//}
 	}// fin du gameobject null
