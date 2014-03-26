@@ -61,6 +61,9 @@ function ValidateData () {
 	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("menuGoBack") == null) {
 		gameObject.Find("Main Camera").AddComponent("menuGoBack");
 	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("fil_de_fer") == null) {
+		gameObject.Find("Forme").AddComponent("fil_de_fer");
+	}
     (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
 	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;*/
 }
@@ -96,42 +99,51 @@ function UpdateMesh () {
 	 newVertices[parrallele*meridian+1] = Vector3(-radius,0,0);
 	 uv[parrallele*meridian+1] = Vector2(-radius, 0);
 
-	/* 0 -> 5 */
+	/* 0 -> 3*(meridian-1)-1 */
 	for (k = 0; k < meridian-1; k++) {
 			newTriangles[3*k] = 0;
 			newTriangles[3*k+1] = k+1;
 			newTriangles[3*k+2] = k+2;
 	}
-	/* 5 -> 8 */
+	/* 3*(meridian-1) -> 3*meridian-1 */
 	k = meridian-1;
 	newTriangles[3*k] = 0;
 	newTriangles[3*k+1] = k+1;
 	newTriangles[3*k+2] = 1;
-	
-	for ( k = 0; k < meridian*parrallele;k++){
-		for (i = 0; i < parrallele; i++) {
-			for (j = 0; j < meridian; j++) {
+	/* grille du milieu */
+	k = 0;
+	//for ( k = 0; k < meridian*parrallele;k++){
+		for (i = 0; i < parrallele-1; i++) {
+			for (j = 0; j < meridian-1; j++) {
 				newTriangles[3*meridian + k    ] = i * (meridian /*+ 1*/) + j + 1;
 				newTriangles[3*meridian + k + 1] = (i + 1) * (meridian/* + 1*/) + j +1;
 				newTriangles[3*meridian + k + 2] =  (i + 1) * (meridian/* + 1*/) + j + 2;
 				newTriangles[3*meridian + k + 3] = i * (meridian/* + 1*/) + j + 1;
 				newTriangles[3*meridian + k + 4] = (i + 1) * (meridian /*+ 1*/) + j + 2;
 				newTriangles[3*meridian + k + 5] = i * (meridian/* + 1*/) + j + 2;
+				k+=6;
 			}
+			/* cas particulier */
+			newTriangles[3*meridian + k    ] = i * (meridian /*+ 1*/) + j + 1;
+			newTriangles[3*meridian + k + 1] = (i + 1) * (meridian/* + 1*/) + j +1;
+			newTriangles[3*meridian + k + 2] =  (i + 1) * (meridian/* + 1*/) + 1;
+			newTriangles[3*meridian + k + 3] = i * (meridian/* + 1*/) + j + 1;
+			newTriangles[3*meridian + k + 4] = (i + 1) * (meridian /*+ 1*/) + 1;
+			newTriangles[3*meridian + k + 5] = i * (meridian/* + 1*/) + 1;
+			k+=6;
 		}
-	}
+	//}
 	
 	// les triangles du dernier sommet !!!!
-	var r : int = 6*(parrallele-1) * meridian;
-	for (k = 0; k < meridian-1;) {
-			newTriangles[r+k] = parrallele*meridian+1;
-			newTriangles[r+k+1] = meridian*(parrallele-1) +k+1;
-			newTriangles[r+k+2] = meridian*(parrallele-1) +k+2;
+	k = 3*meridian + 6*meridian*(parrallele-1);
+	for (var r: int = 0; r < meridian-1;r++) {
+			newTriangles[k] = parrallele*meridian+1;
+			newTriangles[k+1] = meridian*(parrallele-1) +r+1;
+			newTriangles[k+2] = meridian*(parrallele-1) +r+2;
 			k+=3;
 	}
-	k = r+meridian;
 	newTriangles[k] = parrallele*meridian+1;
-	newTriangles[k+1] = meridian*(parrallele-1)+ meridian;
+	newTriangles[k+1] = meridian*parrallele;
 	newTriangles[k+2] = meridian*(parrallele-1)+1;
  
    //create a new mesh, assign the vertices and triangles

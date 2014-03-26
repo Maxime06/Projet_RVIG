@@ -7,6 +7,7 @@ private var newTriangles : int[] = new int[3*12];
 var length : float = 4f;
 var width : float = 1.5;
 var height : float = 2f;
+var center : boolean = true;
  
 function Start () {   
 if (PlayerPrefs.HasKey("parallelepipoidLength") && PlayerPrefs.HasKey("parallelepipoidWidth")
@@ -63,6 +64,9 @@ function ValidateData () {
 	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("menuGoBack") == null) {
 		gameObject.Find("Main Camera").AddComponent("menuGoBack");
 	}
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("fil_de_fer") == null) {
+		gameObject.Find("Forme").AddComponent("fil_de_fer");
+	}
     (gameObject.Find("Forme").GetComponent("deformation") as MonoBehaviour).enabled = false;
 	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
     
@@ -83,8 +87,11 @@ function UpdateMesh () {
     var p7 : Vector3 = Vector3(0,1*height,1*length);
  
  	newVertices = [p0,p1,p2,p3,p4,p5,p6,p7];
-	
+ 		
 	for (var i : int = 0; i < 8; i++) {
+		if (center) {
+			newVertices[i] -= Vector3 (width / 2, height / 2, length / 2);
+		}
 		uv[i] = Vector2(newVertices[i].x, newVertices[i].z);
 	}
 	

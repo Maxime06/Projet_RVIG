@@ -74,8 +74,8 @@ function Update () {
 			target = gameObject.Find("Forme").transform;
 		}
 		transform.LookAt(target);
-		transform.RotateAround (target.position, target.up, Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime);
-		transform.RotateAround (target.position, transform.right, Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime);
+		transform.RotateAround (target.transform.position, transform.up, Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime);
+		transform.RotateAround (target.transform.position, transform.right, Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime);
 		
 			/*if (Application.platform == RuntimePlatform.OSXPlayer) {
 			

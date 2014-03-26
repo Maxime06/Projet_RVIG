@@ -60,7 +60,9 @@ function ValidateData () {
 	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("menuGoBack") == null) {
 		gameObject.Find("Main Camera").AddComponent("menuGoBack");
 	}
-	
+	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("fil_de_fer") == null) {
+		gameObject.Find("Forme").AddComponent("fil_de_fer");
+	}
     (gameObject.Find("Forme").GetComponent("deformation") as MonoBehaviour).enabled = false;
 	(gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
 }
