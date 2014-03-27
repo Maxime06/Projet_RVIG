@@ -1,6 +1,6 @@
 ﻿#pragma strict
 
-/*static */var hSliderRadius : float = 1;
+/*static */var hSliderRadius : float = 5;
 var hSliderMeridian : int = 20;
 var hSliderParallele : int = 20;
 

@@ -16,6 +16,7 @@ function ValidateData () {
 		radius = PlayerPrefs.GetFloat("sphereRadius");
 		meridian = PlayerPrefs.GetInt("sphereMeridian");
 		parrallele = PlayerPrefs.GetInt("sphereParallele");
+		PlayerPrefs.DeleteAll();
 	}
 	
 	// create Sphere if don't exists

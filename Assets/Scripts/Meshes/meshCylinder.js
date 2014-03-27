@@ -16,7 +16,7 @@ function ValidateData () {
 		radius = PlayerPrefs.GetFloat("cylinderRadius");
 		height = PlayerPrefs.GetFloat("cylinderHeight");
 		nbPoints = PlayerPrefs.GetInt("cylindernbPoints");
-		//PlayerPrefs.DeleteAll();
+		PlayerPrefs.DeleteAll();
 	}
 
 	// create Cylinder if don't exists

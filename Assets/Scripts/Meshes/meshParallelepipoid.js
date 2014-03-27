@@ -19,6 +19,7 @@ function ValidateData () {
 		length = PlayerPrefs.GetFloat("parallelepipoidLength");
 		width = PlayerPrefs.GetFloat("parallelepipoidWidth");
 		height = PlayerPrefs.GetFloat("parallelepipoidHeight");
+		PlayerPrefs.DeleteAll();
 	}
 
 	// create Parallelepipoid if don't exists

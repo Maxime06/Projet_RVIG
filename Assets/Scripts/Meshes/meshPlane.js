@@ -19,6 +19,7 @@ function ValidateData () {
 		size.y = PlayerPrefs.GetInt("planeWidth");
 		resolutionX = PlayerPrefs.GetInt("planeResX");
 		resolutionZ = PlayerPrefs.GetInt("planeResZ");
+		PlayerPrefs.DeleteAll();
 	}
 
     // create Plane if don't exists

@@ -109,7 +109,8 @@ function OnGUI() {
 		GUI.Label(Rect (20,Screen.height - 65,200,50), "Point 1 : ("+truncate(point1.x)+","+truncate(point1.y)+","+truncate(point1.z)+")");
 		GUI.Label(Rect (20,Screen.height - 50,200,50), "Point 2 : ("+truncate(point2.x)+","+truncate(point2.y)+","+truncate(point2.z)+")");
 		if(bool) {
-			GUI.Label(Rect (200,Screen.height - 65,200,50), "distance : "+dist);
+			GUI.Box (Rect (Screen.width-230,Screen.height - 80,220,70), "Informations");
+			GUI.Label(Rect (Screen.width - 210,Screen.height - 65,200,50), "Distance de l'arete : "+dist);
 		}
 		
 	}
@@ -121,7 +122,8 @@ function OnGUI() {
 		GUI.Label(Rect (20,Screen.height - 50,200,50), "Point 2 : ("+truncate(point2.x)+","+truncate(point2.y)+","+truncate(point2.z)+")");
 		GUI.Label(Rect (20,Screen.height - 35,200,50), "Point 3 : ("+truncate(point3.x)+","+truncate(point3.y)+","+truncate(point3.z)+")");
 		if(bool) {
-			GUI.Label(Rect (200,Screen.height - 65,200,50), "aire : "+aire);
+			GUI.Box (Rect (Screen.width-230,Screen.height - 80,220,70), "Informations");
+			GUI.Label(Rect (Screen.width - 210,Screen.height - 65,200,50), "Aire de la face : "+aire);
 		}
 	}	
 }
