@@ -1,20 +1,23 @@
 ﻿#pragma strict
 
 var Sphere : GameObject;
-var parrallele : float = 20;
-var meridian : float = 20;
-private var newVertices : Vector3[] = new Vector3[parrallele*meridian+2];
-private var newTriangles : int[]  = new int[(parrallele-1)* meridian * 6 + 2*meridian * 3];
+var parrallele : float = 3;
+var meridian : float = 3;
+public var newVertices : Vector3[] = new Vector3[parrallele*meridian+2];
+public var newTriangles : int[]  = new int[(parrallele-1)* meridian * 6 + 2*meridian * 3];
 var radius : float = 5;
 
 function Start () {
-	if (PlayerPrefs.HasKey("sphereRadius")) {
-		radius = PlayerPrefs.GetFloat("sphereRadius");
-		PlayerPrefs.DeleteKey("sphereRadius");
-	}
 }
 
 function ValidateData () {
+
+	if (PlayerPrefs.HasKey("sphereRadius") && PlayerPrefs.HasKey("sphereMeridian") && PlayerPrefs.HasKey("sphereParallele")) {
+		radius = PlayerPrefs.GetFloat("sphereRadius");
+		meridian = PlayerPrefs.GetInt("sphereMeridian");
+		parrallele = PlayerPrefs.GetInt("sphereParallele");
+	}
+	
 	// create Sphere if don't exists
 	if(gameObject.Find("Forme") == null) {
 		Sphere = new GameObject ("Forme");
@@ -34,7 +37,7 @@ function ValidateData () {
     if(gameObject.Find("Forme").GetComponent(MeshCollider) == null) {
     	Sphere.AddComponent(MeshCollider);
     }
- /*  if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
+    if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation") == null) {
 		gameObject.Find("Forme").AddComponent("deformation");
 	}
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("deformation_arrete") == null) {
@@ -55,8 +58,8 @@ function ValidateData () {
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("PointInfo") == null) {
 		gameObject.Find("Forme").AddComponent("PointInfo");
 	}
-	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("scale_deformation") == null) {
-		gameObject.Find("Forme").AddComponent("scale_deformation");
+	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("scale_deformation") == null) {
+		gameObject.Find("Main Camera").AddComponent("scale_deformation");
 	}
 	if (gameObject.Find("Main Camera") != null && gameObject.Find("Main Camera").GetComponent("menuGoBack") == null) {
 		gameObject.Find("Main Camera").AddComponent("menuGoBack");
@@ -65,7 +68,7 @@ function ValidateData () {
 		gameObject.Find("Forme").AddComponent("fil_de_fer");
 	}
     (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
-	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;*/
+	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
 }
 
 function UpdateMesh () {
@@ -81,23 +84,23 @@ function UpdateMesh () {
 	 rsinthethacos phi
 	 r sin phi
 	 */
-	 newVertices[0] = Vector3(radius, 0,0);
-	 uv[0] = Vector2(radius, 0);
+	 newVertices[0] = Vector3(0,0,radius);
+	 uv[0] = Vector2(0, radius);
 	 var k : int = 1;
-	 for (var i : int = 0; i < parrallele; i++) {
+	 for (var i : int = 1; i <= parrallele; i++) {
 	 	for (var j : int = 0; j < meridian; j++) {
 	 	var phi : float = (i/parrallele)*Mathf.PI;
 	 	var theta : float = (j/meridian)*2*Mathf.PI;
-	 	var c1 : float = radius * Mathf.Cos(theta) * Mathf.Cos(phi);
-	 	var c2 : float = radius * Mathf.Sin(theta) * Mathf.Cos(phi);
-	 	var c3 : float = radius * Mathf.Sin(phi);
+	 	var c1 : float = radius * Mathf.Sin(phi) * Mathf.Cos(theta);
+	 	var c2 : float = radius * Mathf.Sin(phi) * Mathf.Sin(theta);
+	 	var c3 : float = radius * Mathf.Cos(phi);
 	 	newVertices[k] = Vector3(c1,c2,c3);
 	 	uv[k] = Vector2(newVertices[i].x, newVertices[i].z);
 	 	k++;
 	 	}
 	 }
-	 newVertices[parrallele*meridian+1] = Vector3(-radius,0,0);
-	 uv[parrallele*meridian+1] = Vector2(-radius, 0);
+	 newVertices[parrallele*meridian+1] = Vector3(0,0,-radius);
+	 uv[parrallele*meridian+1] = Vector2(0, -radius);
 
 	/* 0 -> 3*(meridian-1)-1 */
 	for (k = 0; k < meridian-1; k++) {
@@ -108,43 +111,43 @@ function UpdateMesh () {
 	/* 3*(meridian-1) -> 3*meridian-1 */
 	k = meridian-1;
 	newTriangles[3*k] = 0;
-	newTriangles[3*k+1] = k+1;
+	newTriangles[3*k+1] = meridian;
 	newTriangles[3*k+2] = 1;
 	/* grille du milieu */
 	k = 0;
 	//for ( k = 0; k < meridian*parrallele;k++){
-		for (i = 0; i < parrallele-1; i++) {
-			for (j = 0; j < meridian-1; j++) {
-				newTriangles[3*meridian + k    ] = i * (meridian /*+ 1*/) + j + 1;
-				newTriangles[3*meridian + k + 1] = (i + 1) * (meridian/* + 1*/) + j +1;
-				newTriangles[3*meridian + k + 2] =  (i + 1) * (meridian/* + 1*/) + j + 2;
-				newTriangles[3*meridian + k + 3] = i * (meridian/* + 1*/) + j + 1;
-				newTriangles[3*meridian + k + 4] = (i + 1) * (meridian /*+ 1*/) + j + 2;
-				newTriangles[3*meridian + k + 5] = i * (meridian/* + 1*/) + j + 2;
+		for (i = 1; i < parrallele; i++) {
+			for (j = 1; j < meridian; j++) {
+				newTriangles[3*meridian + k    ] =  j + meridian * (i - 1);
+				newTriangles[3*meridian + k + 1] = j + meridian * i;
+				newTriangles[3*meridian + k + 2] =  j + meridian * (i - 1) + 1;
+				newTriangles[3*meridian + k + 3] = j + meridian * (i - 1) + 1;
+				newTriangles[3*meridian + k + 4] = j + meridian * i;
+				newTriangles[3*meridian + k + 5] = j + meridian * i + 1;
 				k+=6;
 			}
 			/* cas particulier */
-			newTriangles[3*meridian + k    ] = i * (meridian /*+ 1*/) + j + 1;
-			newTriangles[3*meridian + k + 1] = (i + 1) * (meridian/* + 1*/) + j +1;
-			newTriangles[3*meridian + k + 2] =  (i + 1) * (meridian/* + 1*/) + 1;
-			newTriangles[3*meridian + k + 3] = i * (meridian/* + 1*/) + j + 1;
-			newTriangles[3*meridian + k + 4] = (i + 1) * (meridian /*+ 1*/) + 1;
-			newTriangles[3*meridian + k + 5] = i * (meridian/* + 1*/) + 1;
+			newTriangles[3*meridian + k    ] =  meridian * i;         // meridian + meridian * (i - 1)
+			newTriangles[3*meridian + k + 1] = meridian * (i + 1);     // meridian + meridian * i
+			newTriangles[3*meridian + k + 2] = meridian * (i - 1) + 1;
+			newTriangles[3*meridian + k + 3] = meridian * (i - 1) + 1;
+			newTriangles[3*meridian + k + 4] = meridian * (i + 1);
+			newTriangles[3*meridian + k + 5] = meridian * i + 1;       // meridian * (i - 1) + 1 + meridian
 			k+=6;
 		}
 	//}
 	
 	// les triangles du dernier sommet !!!!
 	k = 3*meridian + 6*meridian*(parrallele-1);
-	for (var r: int = 0; r < meridian-1;r++) {
+	for (var r: int = 0; r < meridian-1; r++) {
 			newTriangles[k] = parrallele*meridian+1;
-			newTriangles[k+1] = meridian*(parrallele-1) +r+1;
-			newTriangles[k+2] = meridian*(parrallele-1) +r+2;
+			newTriangles[k+1] = meridian*(parrallele-1) +r+2;
+			newTriangles[k+2] = meridian*(parrallele-1) +r+1;
 			k+=3;
 	}
 	newTriangles[k] = parrallele*meridian+1;
-	newTriangles[k+1] = meridian*parrallele;
-	newTriangles[k+2] = meridian*(parrallele-1)+1;
+	newTriangles[k+1] = meridian*(parrallele-1)+1;
+	newTriangles[k+2] = meridian*parrallele;
  
    //create a new mesh, assign the vertices and triangles
     var newMesh : Mesh = new Mesh ();
@@ -164,7 +167,7 @@ function UpdateMesh () {
 // called when the script is loaded or a value is changed in the inspector
 function OnValidate () {
 	UpdateMesh ();
- OtherFace();
+ 	OtherFace();
 }
 
 function OtherFace () {

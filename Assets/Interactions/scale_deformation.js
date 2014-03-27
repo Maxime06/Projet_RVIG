@@ -26,6 +26,7 @@ var ray : Ray;
 var hitinfo : RaycastHit;
 var hitPoint : Vector3;
 var triIndex : int;
+var distance : float = Mathf.Infinity; 
 
 // les points
 var closestpoint : Vector3 = new Vector3(0,0,0);
@@ -34,7 +35,7 @@ var newpoint : Vector3 = new Vector3(0,0,0);
 var profondeur : float = 2.5;
 var min : float;
 var index : int;
-var distance : float = Mathf.Infinity; 
+
 
 var bool : boolean = false;
 var p : Vector3[] = new Vector3[3];
@@ -138,6 +139,13 @@ function Update () {
 			// on créé le nouveau mesh à la bonne taille
 			GetComponentInChildren(meshParallelepipoid).UpdateMesh();
 			GetComponentInChildren(meshParallelepipoid).OtherFace();
+		
+		}
+		// la sphère
+		if  (GameObject.Find("Main Camera").GetComponent("meshSphere") != null) {
+			GetComponentInChildren(meshSphere).radius = sph_radius + Mathf.Clamp(newpoint.x - closestpoint.x, -sph_radius+0.1, 50);
+			GetComponentInChildren(meshSphere).UpdateMesh();
+			GetComponentInChildren(meshSphere).OtherFace();
 		
 		}
 	}

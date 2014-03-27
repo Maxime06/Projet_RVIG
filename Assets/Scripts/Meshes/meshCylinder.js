@@ -8,14 +8,17 @@ private var newVertices : Vector3[] = new Vector3[2*nbPoints+2];
 private var newTriangles : int[] = new int[3*4*nbPoints];
 var center : boolean = true;
 function Start () {
-	if (PlayerPrefs.HasKey("cylinderRadius") && PlayerPrefs.HasKey("cylinderHeight")) {
-		radius = PlayerPrefs.GetFloat("cylinderRadius");
-		height = PlayerPrefs.GetFloat("cylinderHeight");
-		PlayerPrefs.DeleteAll();
-	}
 }
 
 function ValidateData () {
+
+	if (PlayerPrefs.HasKey("cylinderRadius") && PlayerPrefs.HasKey("cylinderHeight") && PlayerPrefs.HasKey("cylindernbPoints")) {
+		radius = PlayerPrefs.GetFloat("cylinderRadius");
+		height = PlayerPrefs.GetFloat("cylinderHeight");
+		nbPoints = PlayerPrefs.GetInt("cylindernbPoints");
+		//PlayerPrefs.DeleteAll();
+	}
+
 	// create Cylinder if don't exists
 	if(gameObject.Find("Forme") == null) {
 		Cylinder = new GameObject ("Forme");

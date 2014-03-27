@@ -10,16 +10,17 @@ var height : float = 2f;
 var center : boolean = true;
  
 function Start () {   
-if (PlayerPrefs.HasKey("parallelepipoidLength") && PlayerPrefs.HasKey("parallelepipoidWidth")
+}
+
+function ValidateData () {
+
+	if (PlayerPrefs.HasKey("parallelepipoidLength") && PlayerPrefs.HasKey("parallelepipoidWidth")
 					&& PlayerPrefs.HasKey("parallelepipoidHeight")) {
 		length = PlayerPrefs.GetFloat("parallelepipoidLength");
 		width = PlayerPrefs.GetFloat("parallelepipoidWidth");
 		height = PlayerPrefs.GetFloat("parallelepipoidHeight");
-		PlayerPrefs.DeleteAll();
 	}
-}
 
-function ValidateData () {
 	// create Parallelepipoid if don't exists
 	if(gameObject.Find("Forme") == null) {
 		Parallelepipoid = new GameObject ("Forme");

@@ -79,6 +79,7 @@ function Update () {
 		GameObject.Find("Forme").transform.Find("AllCubesHelp").gameObject.SetActive(true);
 		GameObject.Find("Forme").transform.Find("AllCubes").gameObject.SetActive(false);
 		decalage = 0;
+		collision = false;
 	}
 }
 
@@ -107,12 +108,37 @@ function CheckTriangle () {
 }
 
 function UpdateMesh () {
-	if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl)) {
+	if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl)) {	
+	meshVertices = FormeFilter.mesh.vertices;
+	
 		// tableau des trois points du triangle heurté.
 		p = [meshVertices[meshTriangles[3*triIndex]],
 			 meshVertices[meshTriangles[3*triIndex+1]],
 			 meshVertices[meshTriangles[3*triIndex+2]]
 			];
+		
+			/*	
+		// on cherche l'arrete la plus proche	
+		min = Vector3.Distance(p[0], hitPoint); 
+		// pour chaque couple de points p[i] p[(i+1)%3]
+		for (var i : int = 0; i < 3; i++) {
+			// dist = norm(BA ^ u)/norm(u)
+			var vector_to_hitPoint : Vector3 = hitPoint - p[i];
+			var u : Vector3 = p[i] - p[(i+1)%3];
+			var nu : float = Mathf.Sqrt((u.x)*(u.x)+(u.y)*(u.y)+(u.z)*(u.z));
+			var crossprod : Vector3 = Vector3.Cross(vector_to_hitPoint, u);
+			var ncp : float = Mathf.Sqrt((crossprod.x)*(crossprod.x)+(crossprod.y)*(crossprod.y)+(crossprod.z)*(crossprod.z));
+			var d : float = ncp/nu;
+			if (d <= min) { 
+				min = d;
+				index_mil = i;
+			}
+		}
+			
+		newpoint1 = p[index_mil];
+		newpoint2 = p[(index_mil+1)%3];
+		index[0] = meshTriangles[3*triIndex + index_mil];
+		index[1] = meshTriangles[3*triIndex + (index_mil+1)%3];*/
 		
 		// on créé trois points qui sont les milieux de chaque aretes
 		var milieux : Vector3[] = new Vector3[3];
@@ -137,28 +163,6 @@ function UpdateMesh () {
 		index[1] = meshTriangles[3*triIndex + (index_mil+1)%3];
 		
 		
-		/*
-		max = Vector3.Distance(p[0], hitPoint);
-		for (var i : int = 0; i < 3; i++) {
-			var point : Vector3 = p[i];
-			var d : float = Vector3.Distance(point, hitPoint);
-				if (d >= max) { 
-					max = d;
-					farestpoint = point;
-				}
-		}
-		var p2 : Vector3[] = new Vector3[2];
-		var k : int = 0;
-		for(i=0; i < 3; i++) {
-			if (p[i] != farestpoint) {
-				p2[k] = p[i];
-				index[k] = meshTriangles[3*triIndex + i];
-				k++;
-			}
-		}
-		// on modifie le point closestpoint dans le mesh
-		newpoint1 = p2[0];
-		newpoint2 = p2[1];*/
 		
 		var cam = gameObject.Find("Main Camera").camera;
 		// troisième paramètre : distance de la caméra 
@@ -185,8 +189,8 @@ function UpdateMesh () {
 		var meshVertices : Vector3[] = oldMesh.vertices;
 		meshVertices[index[1]] = newpoint1;
 		meshVertices[index[0]] = newpoint2;
-		meshVertices[index[1]+(meshVertices.Length/2)] = newpoint1;
-		meshVertices[index[0]+(meshVertices.Length/2)] = newpoint2;
+		meshVertices[(index[1]+(meshVertices.Length/2))%meshVertices.Length] = newpoint1;
+		meshVertices[(index[0]+(meshVertices.Length/2))%meshVertices.Length] = newpoint2;
 		oldMesh.vertices = meshVertices;
 		oldMesh.RecalculateNormals();                               
 		oldMesh.RecalculateBounds();

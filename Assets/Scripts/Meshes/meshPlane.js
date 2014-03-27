@@ -10,15 +10,17 @@ private var newTriangles : int[] = new int[resolutionX * resolutionZ * 6];
 private var newUvs : Vector2[] = new Vector2[newVertices.Length];
 
 function Start () {
-	if (PlayerPrefs.HasKey("planeLength") && PlayerPrefs.HasKey("planeWidth")) {
-		resolutionX = PlayerPrefs.GetInt("planeLength");
-		resolutionZ = PlayerPrefs.GetInt("planeWidth");
-		size = Vector2(resolutionX, resolutionZ);
-		PlayerPrefs.DeleteAll();
-	}
 }
 
 function ValidateData () {
+
+	if (PlayerPrefs.HasKey("planeLength") && PlayerPrefs.HasKey("planeWidth")) {
+		size.x = PlayerPrefs.GetInt("planeLength");
+		size.y = PlayerPrefs.GetInt("planeWidth");
+		resolutionX = PlayerPrefs.GetInt("planeResX");
+		resolutionZ = PlayerPrefs.GetInt("planeResZ");
+	}
+
     // create Plane if don't exists
 	if(gameObject.Find("Forme") == null) {
 		Plan = GameObject ("Forme");
@@ -67,7 +69,7 @@ function ValidateData () {
 	if (gameObject.Find("Forme") != null && gameObject.Find("Forme").GetComponent("fil_de_fer") == null) {
 		gameObject.Find("Forme").AddComponent("fil_de_fer");
 	}
-    (gameObject.Find("Forme").GetComponent("deformation_arrete") as MonoBehaviour).enabled = false;
+    (gameObject.Find("Forme").GetComponent("deformation") as MonoBehaviour).enabled = false;
 	(gameObject.Find("Forme").GetComponent("deformation_face") as MonoBehaviour).enabled = false;
     
 	// la limite peut être abaissée mais il faut éviter une taille nulle car le mesh deviendra invisible

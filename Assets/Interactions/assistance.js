@@ -7,7 +7,6 @@ var min_assist : float;
 var max_assist : float;
 var closestpoint_assist : Vector3 = new Vector3(0,0,0);
 var farestpoint_assist : Vector3 = new Vector3(0,0,0);
-var index_assist : int[] = new int[3];
 var index_mil_assist : int = 0;
 var i : int;
 var d : float;
@@ -90,11 +89,8 @@ function Update () {
 				if (d <= min_assist) { 
 					min_assist = d;
 					closestpoint_assist = point_assist;
-					index_assist[0] = meshTriangles_assist[3*triIndex_assist + i];
 				}
 		}
-		index_assist[1] = 0;
-		index_assist[2] = 0;
 		cube1_assist.transform.position = closestpoint_assist;
 		//SetCubes(true, AllCubesHelp);
 		SetCubes(true, cube1_assist);
@@ -109,7 +105,22 @@ function Update () {
 			 meshVertices_assist[meshTriangles_assist[3*triIndex_assist+1]],
 			 meshVertices_assist[meshTriangles_assist[3*triIndex_assist+2]]
 			];
-						
+		
+		/*min_assist = Vector3.Distance(p_assist[0], hitPoint_assist); 
+		for (var i : int = 0; i<3; i++) {
+			var vector_to_hitPoint : Vector3 = hitPoint_assist - p_assist[i];
+			var u1 : Vector3 = p_assist[i] - p_assist[(i+1)%3];
+			var nu1 : float = Mathf.Sqrt((u1.x)*(u1.x)+(u1.y)*(u1.y)+(u1.z)*(u1.z));
+			var crossprod1 : Vector3 = Vector3.Cross(vector_to_hitPoint, u1);
+			var ncp1 : float = Mathf.Sqrt((crossprod1.x)*(crossprod1.x)+(crossprod1.y)*(crossprod1.y)+(crossprod1.z)*(crossprod1.z));
+			var d : float = ncp1/nu1;
+				if (d <= min_assist) { 
+					min_assist = d;
+					index_mil_assist = i;
+				}
+			}				
+		*/								
+																																	
 		// on créé trois points qui sont les milieux de chaque aretes
 		var milieux_assist : Vector3[] = new Vector3[3];
 		for (var i : int = 0; i < 3; i++) {
@@ -126,9 +137,9 @@ function Update () {
 					index_mil_assist = i;
 				}
 		}
-		index_assist[0] = meshTriangles_assist[3*triIndex_assist + index_mil_assist];
-		index_assist[1] = meshTriangles_assist[3*triIndex_assist + (index_mil_assist+1)%3];		
-		/*//on calcule le point le plus proche et on le met dans closestpoint 
+		//index_assist[0] = meshTriangles_assist[3*triIndex_assist + index_mil_assist];
+		//index_assist[1] = meshTriangles_assist[3*triIndex_assist + (index_mil_assist+1)%3];		
+		//on calcule le point le plus loin et on le met dans farestpoint 
 		max_assist = Vector3.Distance(p_assist[0], hitPoint_assist);
 		for (i = 0; i < 3; i++) {
 			point_assist = p_assist[i];
@@ -143,11 +154,10 @@ function Update () {
 		for(i=0; i < 3; i++) {
 			if (p_assist[i] != farestpoint_assist) {
 				p2_assist[k] = p_assist[i];
-				index_assist[k] = meshTriangles_assist[3*triIndex_assist + i];
+				//index_assist[k] = meshTriangles_assist[3*triIndex_assist + i];
 				k++;
 			}
-		}*/
-		index_assist[2] = 0;
+		}
 		// on modifie le point closestpoint dans le mesh
 		cube1_assist.transform.position = p_assist[index_mil_assist];
 		cube2_assist.transform.position = p_assist[(index_mil_assist+1)%3];
@@ -166,11 +176,7 @@ function Update () {
 			 meshVertices_assist[meshTriangles_assist[3*triIndex_assist+1]],
 			 meshVertices_assist[meshTriangles_assist[3*triIndex_assist+2]]
 			];
-			
-		//on calcule le point le plus proche et on le met dans closestpoint 
-		for (i = 0; i < 3; i++) {
-				index_assist[i] =  meshTriangles_assist[3*triIndex_assist + i];
-		}
+
 		// on modifie le point closestpoint dans le mesh
 		cube1_assist.transform.position = p_assist[0];
 		cube2_assist.transform.position = p_assist[1];
